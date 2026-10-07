@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "pagina-de-mangas-7863f"
+  },
+  "targets": {
+    "pagina-de-mangas-7863f": {
+      "hosting": {
+        "enzowukong-mangas": [
+          "enzowukong-mangas"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

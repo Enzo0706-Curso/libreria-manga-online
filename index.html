@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MangaVault — Tu Biblioteca de Manga & Manwha</title>
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+  <link rel="stylesheet" href="estilo.css" />
+  <link rel="stylesheet" href="fondo.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       FONDO ANIMADO ESTRELLADO
+  ═══════════════════════════════════════════ -->
+  <div class="bg-animation-container">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CABECERA / HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-glow-wrapper">
+        <img
+          class="logo-img"
+          src="logo.png"
+          alt="Logo MangaVault"
+        />
+        <!-- Partículas flotantes (animadas por CSS) -->
+        <span class="logo-particle lp1"></span>
+        <span class="logo-particle lp2"></span>
+        <span class="logo-particle lp3"></span>
+        <span class="logo-particle lp4"></span>
+        <span class="logo-particle lp5"></span>
+        <span class="logo-particle lp6"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       BARRA DE BÚSQUEDA Y FILTROS
+  ═══════════════════════════════════════════ -->
+  <section class="controls">
+    <div class="controls-inner">
+
+      <!-- Búsqueda -->
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true"><i class="fi fi-rr-search"></i></span>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Buscar manga o manwha..."
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Filtros por tipo -->
+      <div class="filters" role="group" aria-label="Filtrar por tipo">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="manga">Manga</button>
+        <button class="filter-btn" data-filter="manwha">Manwha</button>
+        <button class="filter-btn" data-filter="manhwa">Manhwa</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       GRID DE TARJETAS TIPO TICKET
+       (se generan dinámicamente con manga.js)
+  ═══════════════════════════════════════════ -->
+  <main>
+    <div class="stats-bar">
+      <span id="contadorResultados">Cargando...</span>
+    </div>
+
+    <div class="manga-grid" id="mangaGrid">
+    </div>
+  </main>
+
+  <!-- Filtro SVG para el efecto neon del botón flip (debe estar en el DOM) -->
+  <svg style="position:absolute;width:0;height:0;" aria-hidden="true">
+    <filter width="3000%" x="-1000%" height="3000%" y="-1000%" id="unopaq">
+      <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 3 0"></feColorMatrix>
+    </filter>
+  </svg>
+
+  <!-- Scripts: auth primero, luego manga, luego admin -->
+  <script src="auth.js"></script>
+  <script src="manga.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    // Iniciar el panel de admin despues de que manga.js cargue
+    initAdminPanel();
+  </script>
+</body>
+</html>

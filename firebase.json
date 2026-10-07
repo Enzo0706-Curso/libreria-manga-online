@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "enzowukong-mangas",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
