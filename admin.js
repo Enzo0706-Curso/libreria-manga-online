@@ -174,6 +174,13 @@ function actualizarBotonHeader() {
           <div class="logout-text">Salir</div>
         </button>
       </div>
+      ${user.role === 'admin' ? `
+      <!-- Botón Toggle de Ajustes Admin -->
+      <button class="setting-btn" id="toggleAdminMenuBtn" title="Menú de administración" aria-expanded="false">
+        <span class="bar bar1"></span>
+        <span class="bar bar2"></span>
+        <span class="bar bar1"></span>
+      </button>` : ''}
     `;
   }
 
@@ -190,7 +197,19 @@ function bindHeaderEvents() {
     document.getElementById('mv-username').focus();
   });
 
+  /* ── Botón de ajustes: muestra / oculta los 3 botones flotantes ── */
+  const toggleBtn = document.getElementById('toggleAdminMenuBtn');
+  toggleBtn?.addEventListener('click', () => {
+    const menu = document.getElementById('mv-float-btn-container');
+    if (!menu) return;
+    const abierto = menu.classList.toggle('show-admin-menu');
+    toggleBtn.classList.toggle('is-open', abierto);
+    toggleBtn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+
   logoutBtn?.addEventListener('click', () => {
+    // Ocultar el menú flotante antes de cerrar sesión
+    document.getElementById('mv-float-btn-container')?.classList.remove('show-admin-menu');
     logout();
     actualizarBotonHeader();
     quitarBotonesAdmin();
