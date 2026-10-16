@@ -4,9 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MangaVault — Tu Biblioteca de Manga & Manwha</title>
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-  <link rel="stylesheet" href="estilo.css" />
-  <link rel="stylesheet" href="fondo.css" />
+  <link rel="preconnect" href="https://cdn-uicons.flaticon.com" crossorigin />
+  <!-- Iconos: carga sin bloquear el primer pintado -->
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" /></noscript>
+  <!-- CSS crítico (minificado). Se deja bloqueante a propósito: evita el "flash" sin estilos -->
+  <link rel="stylesheet" href="estilo.min.css?v=e2775131" />
+  <!-- Fondo estrellado: decorativo, carga sin bloquear -->
+  <link rel="stylesheet" href="fondo.min.css?v=a7bf1986" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="fondo.min.css?v=a7bf1986" /></noscript>
 </head>
 <body>
 
@@ -29,6 +35,10 @@
           class="logo-img"
           src="logo.png"
           alt="Logo MangaVault"
+          width="723"
+          height="1024"
+          fetchpriority="high"
+          decoding="async"
         />
         <!-- Partículas flotantes (animadas por CSS) -->
         <span class="logo-particle lp1"></span>
@@ -101,12 +111,13 @@
     </svg>
   </div>
 
-  <script src="auth.js"></script>
-  <script src="manga.js"></script>
-  <script src="admin.js"></script>
+  <script src="auth.js?v=80c621cb" defer></script>
+  <script src="manga.js?v=8bd143ce" defer></script>
+  <script src="admin.js?v=d57405ef" defer></script>
   <script>
     // Iniciar el panel de admin despues de que manga.js cargue
-    initAdminPanel();
+    // Los scripts con defer se ejecutan antes de DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', initAdminPanel);
   </script>
 </body>
 </html>

@@ -905,24 +905,12 @@ main {
   box-shadow: 0 0 0 2px rgba(233,69,96,0.2);
 }
 
-.t-back-tip {
-  font-size: 0.6em;
-  color: #55556a;
-  text-align: center;
-  font-style: italic;
-}
-
 /* Badge colores */
 .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.badge--manga   { background: #1a3a5c; color: #5bc0fa; }
-.badge--manwha  { background: #3a1a2a; color: #fa5b8c; }
-.badge--manhwa  { background: #1a3a1a; color: #5bfa8c; }
 
 .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--color-text-muted); }
-.empty-state .empty-icon { font-size: 3rem; display: block; margin-bottom: 0.75rem; }
 
 /* ─── 7. UTILIDADES ── */
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ─── 8. RESPONSIVE ── */
 @media (max-width: 640px) {
@@ -1011,25 +999,6 @@ main {
   justify-content: center;
 }
 
-.mv-auth-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(233, 69, 96, 0.5);
-  background: rgba(233, 69, 96, 0.08);
-  color: #e94560;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.mv-auth-btn:hover {
-  background: rgba(233, 69, 96, 0.2);
-  border-color: #e94560;
-  box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
-}
 
 .mv-user-badge {
   display: inline-flex;
@@ -1043,18 +1012,6 @@ main {
 .mv-user-icon  { font-size: 1rem; }
 .mv-user-name  { color: #eee; font-size: 0.85rem; font-weight: 600; }
 
-.mv-btn-logout {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.7rem;
-  border-color: rgba(255,255,255,0.2);
-  background: transparent;
-  color: #aaa;
-}
-.mv-btn-logout:hover {
-  color: #e94560;
-  border-color: #e94560;
-  box-shadow: none;
-}
 
 /* ── OVERLAY (fondo oscuro de modales) ── */
 .mv-overlay {
@@ -1248,7 +1205,6 @@ main {
   transition: all 0.2s;
   backdrop-filter: blur(4px);
 }
-.mv-edit-btn:hover   { background: rgba(52,152,219,0.4);  border-color: #3498db; }
 .mv-delete-btn:hover { background: rgba(231,76,60,0.4);   border-color: #e74c3c; }
 .mv-link-del { width: 1.8rem; height: 1.8rem; font-size: 0.7rem; }
 
@@ -2034,7 +1990,6 @@ body.mv-edit-mode .mv-admin-ticket-btns { display: flex; }
 .t-stub-title .fi { color: var(--t-accent); }
 .t-link-arrow .fi { display: block; font-size: 1em; }
 .t-back-icon .fi { color: var(--t-accent); display: block; }
-.empty-state .empty-icon .fi { color: var(--color-accent); }
 
 
 /* ════════════════════════════════════════════════════
@@ -2553,3 +2508,6 @@ body.mv-edit-mode .mv-admin-ticket-btns { display: flex; }
 @media (max-width: 768px) {
   .mv-link-row { grid-template-columns: 1fr 1fr 1.8rem; }
 }
+
+/* Reserva el ancho del icono mientras carga la fuente (evita saltos de diseño / CLS) */
+i.fi { display: inline-block; min-width: 1em; }

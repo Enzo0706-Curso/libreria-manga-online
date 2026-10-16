@@ -301,6 +301,9 @@ function crearTicket(manga) {
               src="${imgSrc}"
               alt="Portada de ${manga.nombre}"
               loading="lazy"
+              decoding="async"
+              width="300"
+              height="400"
               onerror="this.src='https://placehold.co/300x400/1a1a28/888?text=Sin+imagen'"
             />
             <div class="t-img-overlay"></div>
@@ -471,6 +474,8 @@ function renderizarGrid() {
     mangasFiltrados.forEach(manga => {
       fragmento.appendChild(crearTicket(manga));
     });
+    // Las primeras 4 portadas están sobre el pliegue: cargarlas ya (mejora LCP); el resto, lazy
+    fragmento.querySelectorAll('.t-cover').forEach((img, i) => { if (i < 4) img.loading = 'eager'; });
     grid.appendChild(fragmento);
   }
 

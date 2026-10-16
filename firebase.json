@@ -5,7 +5,38 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "build.py",
+      "notas.txt"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|png|webp|svg|css|js|woff|woff2)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000, public"
+          }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
     ]
   }
 }
