@@ -111,13 +111,14 @@
     </svg>
   </div>
 
-  <script src="auth.js?v=80c621cb" defer></script>
+  <script src="auth.js?v=bd8622b1" defer></script>
   <script src="manga.js?v=8bd143ce" defer></script>
   <script src="admin.js?v=d57405ef" defer></script>
   <script>
-    // Iniciar el panel de admin despues de que manga.js cargue
-    // Los scripts con defer se ejecutan antes de DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', initAdminPanel);
+    // Iniciar el panel de admin (barra de sesión, botón de ajustes, modales) cuando todo cargó.
+    // Los scripts con defer aún NO existen mientras corre este script inline, por eso se llama
+    // dentro de una función (se evalúa en DOMContentLoaded, ya con admin.js disponible).
+    document.addEventListener('DOMContentLoaded', function () { initAdminPanel(); });
   </script>
 </body>
 </html>

@@ -67,7 +67,12 @@ function logout() {
 ───────────────────────────────────────── */
 function getCurrentUser() {
   const raw = localStorage.getItem(AUTH_SESSION_KEY);
-  return raw ? JSON.parse(raw) : null;
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null; // sesión corrupta: se ignora sin romper la página
+  }
 }
 
 function isLoggedIn() { return getCurrentUser() !== null; }
