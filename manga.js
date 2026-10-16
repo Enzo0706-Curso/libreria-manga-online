@@ -164,6 +164,26 @@ const BD_MANGAS = [
    FAVORITOS — persistencia en localStorage
    Clave: "mangas_favoritos" (array de IDs como texto)
 ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   PANTALLA DE CARGA GLOBAL (#loading-overlay)
+   Se muestra brevemente en login/logout, filtros y menú admin.
+   NO se usa al abrir/leer un ticket.
+═══════════════════════════════════════════════════ */
+let _cargaTimer = null;
+function mostrarCarga(accion, duracion = 450) {
+  const overlay = document.getElementById("loading-overlay");
+  if (!overlay) { if (accion) accion(); return; }
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
+  // La acción corre ya con el overlay pintado, así el cambio de contenido queda oculto detrás
+  requestAnimationFrame(() => { if (accion) accion(); });
+  clearTimeout(_cargaTimer);
+  _cargaTimer = setTimeout(() => {
+    overlay.classList.add("hidden");
+    overlay.setAttribute("aria-hidden", "true");
+  }, duracion);
+}
+
 const CLAVE_FAVORITOS = "mangas_favoritos";
 
 function getFavoritos() {
@@ -246,7 +266,7 @@ function generarLinks(links) {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span class="t-link-icon" aria-hidden="true">${link.icono}</span>
+      <span class="t-link-icon" aria-hidden="true"><i class="fi fi-rr-book-alt"></i></span>
       <span class="t-link-name">${link.nombre}</span>
       <span class="t-link-arrow" aria-hidden="true"><i class="fi fi-rr-arrow-right"></i></span>
     </a>
@@ -426,7 +446,17 @@ function renderizarGrid() {
   if (mangasFiltrados.length === 0) {
     grid.innerHTML = `
       <div class="empty-state">
-        <span class="empty-icon"><i class="fi fi-rr-search"></i></span>
+        <div class="no-results-container">
+          <div class="sleeping-search">
+            <i class="fi fi-rr-search icono-lupa-grande"></i>
+            <div class="z-container">
+              <div class="z z-1">Z</div>
+              <div class="z z-2">Z</div>
+              <div class="z z-3">Z</div>
+              <div class="z z-4">Z</div>
+            </div>
+          </div>
+        </div>
         <p>${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
           ? "Aún no has agregado mangas a tus favoritos"
           : `No se encontraron resultados para <strong>"${estado.textoBusqueda}"</strong>`}</p>
@@ -468,8 +498,10 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    estado.filtroActivo = btn.dataset.filter;
-    renderizarGrid();
+    mostrarCarga(() => {
+      estado.filtroActivo = btn.dataset.filter;
+      renderizarGrid();
+    });
   });
 });
 

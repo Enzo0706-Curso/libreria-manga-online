@@ -91,19 +91,19 @@ function inyectarPanelHTML() {
   <!-- ═══ MODAL DE LOGIN (rediseñado) ═══ -->
   <div id="mv-login-overlay" class="mv-overlay hidden">
     <div class="mv-modal">
-      <button class="mv-modal-close" id="mv-login-close" title="Cerrar">✕</button>
+      <button class="mv-modal-close" id="mv-login-close" title="Cerrar"><i class="fi fi-rr-cross-small"></i></button>
       <div class="mv-modal-header">
-        <span class="mv-modal-icon">🔐</span>
+        <span class="mv-modal-icon"><i class="fi fi-rr-lock"></i></span>
         <h2 class="mv-modal-title">Iniciar sesión</h2>
       </div>
       <form id="mv-login-form" autocomplete="off" style="width:100%;display:flex;flex-direction:column;gap:0.9rem;">
         <!-- Input usuario (estilo Smit-Prajapati adaptado) -->
         <div class="mv-input-container">
-          <input type="text" id="mv-username" placeholder="👤  Usuario" autocomplete="username" />
+          <i class="fi fi-rr-user mv-input-icon"></i><input type="text" id="mv-username" placeholder="Usuario" autocomplete="username" />
         </div>
         <!-- Input contraseña -->
         <div class="mv-input-container">
-          <input type="password" id="mv-password" placeholder="🔑  Contraseña" autocomplete="current-password" />
+          <i class="fi fi-rr-key mv-input-icon"></i><input type="password" id="mv-password" placeholder="Contraseña" autocomplete="current-password" />
         </div>
         <p class="mv-error hidden" id="mv-login-error"></p>
         <!-- Botón ENTRAR (estilo HAYABUSA adaptado) -->
@@ -162,7 +162,7 @@ function actualizarBotonHeader() {
       </button>
     `;
   } else {
-    const badge = user.role === 'admin' ? '⚙️' : '👤';
+    const badge = user.role === 'admin' ? '<i class="fi fi-rr-settings"></i>' : '<i class="fi fi-rr-user"></i>';
     area.innerHTML = `
       <div class="mv-user-badge">
         <span class="mv-user-icon">${badge}</span>
@@ -202,19 +202,23 @@ function bindHeaderEvents() {
   toggleBtn?.addEventListener('click', () => {
     const menu = document.getElementById('mv-float-btn-container');
     if (!menu) return;
-    const abierto = menu.classList.toggle('show-admin-menu');
-    toggleBtn.classList.toggle('is-open', abierto);
-    toggleBtn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    mostrarCarga(() => {
+      const abierto = menu.classList.toggle('show-admin-menu');
+      toggleBtn.classList.toggle('is-open', abierto);
+      toggleBtn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    });
   });
 
   logoutBtn?.addEventListener('click', () => {
     // Ocultar el menú flotante antes de cerrar sesión
     document.getElementById('mv-float-btn-container')?.classList.remove('show-admin-menu');
-    logout();
-    actualizarBotonHeader();
-    quitarBotonesAdmin();
-    quitarBotonFlotante();
-    renderizarGrid();
+    mostrarCarga(() => {
+      logout();
+      actualizarBotonHeader();
+      quitarBotonesAdmin();
+      quitarBotonFlotante();
+      renderizarGrid();
+    });
   });
 }
 
@@ -315,6 +319,7 @@ function initAdminPanel() {
       document.getElementById('mv-login-overlay').classList.add('hidden');
       document.getElementById('mv-username').value = '';
       document.getElementById('mv-password').value = '';
+      mostrarCarga(() => {
       actualizarBotonHeader();
       // Redibujar SIEMPRE (admin o usuario normal): crearTicket() lee las notas con
       // getNotesKey(), que ya usa la sesión recién iniciada → notas privadas al instante.
@@ -323,6 +328,7 @@ function initAdminPanel() {
         inyectarBotonesAdmin();
         inyectarBotonFlotante();
       }
+      });
     } else {
       const errEl = document.getElementById('mv-login-error');
       errEl.textContent = result.error;
@@ -444,22 +450,22 @@ function inyectarBotonFlotante() {
   const userOverlayHTML = `
     <div id="mv-uadd-overlay" class="mv-overlay hidden">
       <div class="mv-nadd-modal" style="max-width: 420px;">
-        <button class="mv-modal-close" id="mv-uadd-close" title="Cerrar">✕</button>
-        <h2 class="mv-nadd-title">👤 Nuevo Usuario</h2>
+        <button class="mv-modal-close" id="mv-uadd-close" title="Cerrar"><i class="fi fi-rr-cross-small"></i></button>
+        <h2 class="mv-nadd-title"><i class="fi fi-rr-user-add"></i> Nuevo Usuario</h2>
         <form id="mv-uadd-form" class="mv-form" autocomplete="off">
 
           <div class="mv-input-container">
-            <input type="text" id="mv-uadd-username" placeholder="👤 Nombre de usuario" required minlength="3" autocomplete="off" />
+            <i class="fi fi-rr-user mv-input-icon"></i><input type="text" id="mv-uadd-username" placeholder="Nombre de usuario" required minlength="3" autocomplete="off" />
           </div>
 
           <div class="mv-input-container">
-            <input type="password" id="mv-uadd-password" placeholder="🔑 Contraseña" required minlength="4" autocomplete="new-password" />
+            <i class="fi fi-rr-key mv-input-icon"></i><input type="password" id="mv-uadd-password" placeholder="Contraseña" required minlength="4" autocomplete="new-password" />
           </div>
 
           <div class="mv-input-container">
             <select id="mv-uadd-role" aria-label="Rol del usuario">
-              <option value="user">👤 Usuario normal</option>
-              <option value="admin">⚙️ Súper usuario (admin)</option>
+              <option value="user">Usuario normal</option>
+              <option value="admin">Súper usuario (admin)</option>
             </select>
           </div>
 
@@ -468,11 +474,11 @@ function inyectarBotonFlotante() {
 
           <div class="mv-form-actions">
             <button type="button" id="mv-uadd-cancel" class="mv-btn mv-btn-secondary">Cerrar</button>
-            <button type="submit" class="mv-btn mv-btn-primary">💾 Registrar usuario</button>
+            <button type="submit" class="mv-btn mv-btn-primary"><i class="fi fi-rr-disk"></i> Registrar usuario</button>
           </div>
         </form>
 
-        <button type="button" id="mv-uadd-list-toggle" class="mv-btn mv-btn-secondary mv-btn-full" aria-expanded="false">👥 Ver usuarios registrados</button>
+        <button type="button" id="mv-uadd-list-toggle" class="mv-btn mv-btn-secondary mv-btn-full" aria-expanded="false"><i class="fi fi-rr-users"></i> Ver usuarios registrados</button>
         <div id="mv-uadd-list-wrap" class="mv-uadd-list-wrap hidden">
           <div id="mv-users-list" class="mv-users-list"></div>
         </div>
@@ -483,8 +489,8 @@ function inyectarBotonFlotante() {
   const mangaOverlayHTML = `
     <div id="mv-nadd-overlay" class="mv-overlay hidden">
       <div class="mv-nadd-modal">
-        <button class="mv-modal-close" id="mv-nadd-close" title="Cerrar">✕</button>
-        <h2 class="mv-nadd-title" id="mv-nadd-title">➕ Nuevo Manga</h2>
+        <button class="mv-modal-close" id="mv-nadd-close" title="Cerrar"><i class="fi fi-rr-cross-small"></i></button>
+        <h2 class="mv-nadd-title" id="mv-nadd-title"><i class="fi fi-rr-plus"></i> Nuevo Manga</h2>
         <form id="mv-nadd-form" class="mv-form" autocomplete="off">
           <input type="hidden" id="mv-nadd-id" />
           <div class="mv-field">
@@ -504,15 +510,15 @@ function inyectarBotonFlotante() {
             <div class="mv-img-options">
               <div class="mv-radio-row">
                 <input type="radio" name="mv-nadd-img-src" id="mv-nadd-img-url" value="url" checked />
-                <label for="mv-nadd-img-url">📎 URL de imagen</label>
+                <label for="mv-nadd-img-url"><i class="fi fi-rr-link"></i> URL de imagen</label>
               </div>
               <input type="url" id="mv-nadd-imagen-url" placeholder="https://..." />
               <div class="mv-radio-row">
                 <input type="radio" name="mv-nadd-img-src" id="mv-nadd-img-file" value="file" />
-                <label for="mv-nadd-img-file">📁 Desde mi dispositivo / galería</label>
+                <label for="mv-nadd-img-file"><i class="fi fi-rr-folder"></i> Desde mi dispositivo / galería</label>
               </div>
               <input type="file" id="mv-nadd-imagen-file" accept="image/*" class="hidden" />
-              <button type="button" id="mv-nadd-file-btn" class="mv-btn mv-btn-secondary hidden">🖼️ Elegir imagen</button>
+              <button type="button" id="mv-nadd-file-btn" class="mv-btn mv-btn-secondary hidden"><i class="fi fi-rr-picture"></i> Elegir imagen</button>
               <img id="mv-nadd-img-preview" class="mv-img-preview hidden" alt="Vista previa" />
             </div>
           </div>
@@ -523,12 +529,12 @@ function inyectarBotonFlotante() {
           <div class="mv-field">
             <label>Links de lectura</label>
             <div id="mv-nadd-links-container"></div>
-            <button type="button" id="mv-nadd-add-link" class="mv-btn mv-btn-secondary" style="margin-top:0.4rem;">➕ Añadir link</button>
+            <button type="button" id="mv-nadd-add-link" class="mv-btn mv-btn-secondary" style="margin-top:0.4rem;"><i class="fi fi-rr-plus"></i> Añadir link</button>
           </div>
           <p class="mv-error hidden" id="mv-nadd-error"></p>
           <div class="mv-form-actions" style="margin-top:1rem;">
             <button type="button" id="mv-nadd-cancel" class="mv-btn mv-btn-secondary">Cancelar</button>
-            <button type="submit" class="mv-btn mv-btn-primary">💾 Guardar manga</button>
+            <button type="submit" class="mv-btn mv-btn-primary"><i class="fi fi-rr-disk"></i> Guardar manga</button>
           </div>
         </form>
       </div>
@@ -563,7 +569,7 @@ function inyectarBotonFlotante() {
     const abrir = wrap.classList.contains('hidden');
     wrap.classList.toggle('hidden', !abrir);
     btn.setAttribute('aria-expanded', String(abrir));
-    btn.textContent = abrir ? '🔼 Ocultar usuarios registrados' : '👥 Ver usuarios registrados';
+    btn.innerHTML = abrir ? '<i class="fi fi-rr-angle-small-up"></i> Ocultar usuarios registrados' : '<i class="fi fi-rr-users"></i> Ver usuarios registrados';
     if (abrir) renderUsersList();
   });
 
@@ -581,7 +587,7 @@ function inyectarBotonFlotante() {
 
     const result = registerUser(u, p, role);
     if (result.success) {
-      okEl.textContent = '✅ Usuario "' + u + '" registrado como ' + (role === 'admin' ? 'súper usuario' : 'usuario normal') + '.';
+      okEl.innerHTML = '<i class="fi fi-rr-check-circle"></i> Usuario "' + escHtml(u) + '" registrado como ' + (role === 'admin' ? 'súper usuario' : 'usuario normal') + '.';
       okEl.classList.remove('hidden');
       e.target.reset();
       renderUsersList();
@@ -626,7 +632,7 @@ function inyectarBotonFlotante() {
     reader.readAsDataURL(file);
   });
   document.getElementById('mv-nadd-add-link').addEventListener('click', () => {
-    naddLinks.push({ nombre: '', url: '', icono: '📖' });
+    naddLinks.push({ nombre: '', url: '', icono: '' });
     renderNaddLinks();
   });
   document.getElementById('mv-nadd-form').addEventListener('submit', e => {
@@ -662,7 +668,7 @@ function abrirUaddOverlay() {
   document.getElementById('mv-uadd-list-wrap').classList.add('hidden');
   const t = document.getElementById('mv-uadd-list-toggle');
   t.setAttribute('aria-expanded', 'false');
-  t.textContent = '👥 Ver usuarios registrados';
+  t.innerHTML = '<i class="fi fi-rr-users"></i> Ver usuarios registrados';
   document.getElementById('mv-uadd-overlay').classList.remove('hidden');
 }
 
@@ -693,11 +699,9 @@ function renderNaddLinks() {
     row.innerHTML = `
       <input class="mv-nadd-ln" type="text" placeholder="Sitio" value="${link.nombre}" />
       <input class="mv-nadd-lu" type="url"  placeholder="https://..." value="${link.url}" />
-      <input class="mv-nadd-li" type="text" placeholder="📖" value="${link.icono || '📖'}" maxlength="4" />
-      <button type="button" class="mv-ticket-btn mv-delete-btn mv-link-del" data-idx="${idx}">✕</button>`;
+      <button type="button" class="mv-ticket-btn mv-delete-btn mv-link-del" data-idx="${idx}"><i class="fi fi-rr-cross-small"></i></button>`;
     row.querySelector('.mv-nadd-ln').addEventListener('input', e => { naddLinks[idx].nombre = e.target.value; });
     row.querySelector('.mv-nadd-lu').addEventListener('input', e => { naddLinks[idx].url    = e.target.value; });
-    row.querySelector('.mv-nadd-li').addEventListener('input', e => { naddLinks[idx].icono  = e.target.value; });
     row.querySelector('.mv-link-del').addEventListener('click', () => { naddLinks.splice(idx, 1); renderNaddLinks(); });
     container.appendChild(row);
   });
@@ -716,11 +720,11 @@ function abrirNaddOverlay(manga) {
 
   naddLinks = (editando && Array.isArray(manga.links) && manga.links.length)
     ? manga.links.map(l => ({ ...l }))
-    : [{ nombre: '', url: '', icono: '📖' }];
+    : [{ nombre: '', url: '', icono: '' }];
   naddImagenBase64 = esData ? manga.imagen : null;
 
   document.getElementById('mv-nadd-id').value          = editando ? manga.id : '';
-  document.getElementById('mv-nadd-title').textContent = editando ? '✏️ Editar Manga' : '➕ Nuevo Manga';
+  document.getElementById('mv-nadd-title').innerHTML = editando ? '<i class="fi fi-rr-pencil"></i> Editar Manga' : '<i class="fi fi-rr-plus"></i> Nuevo Manga';
   document.getElementById('mv-nadd-nombre').value      = editando ? manga.nombre : '';
   document.getElementById('mv-nadd-tipo').value        = editando ? manga.tipo : 'manga';
   document.getElementById('mv-nadd-imagen-url').value  = (editando && !esData) ? (manga.imagen || '') : '';
@@ -767,13 +771,13 @@ function renderUsersList() {
   container.innerHTML = users.map(u => `
     <div class="mv-user-row">
       <div class="mv-user-info">
-        <span class="mv-user-row-icon">${u.role === 'admin' ? '⚙️' : '👤'}</span>
+        <span class="mv-user-row-icon">${u.role === 'admin' ? '<i class="fi fi-rr-settings"></i>' : '<i class="fi fi-rr-user"></i>'}</span>
         <span class="mv-user-row-name">${escHtml(u.username)}</span>
         <span class="mv-role-badge ${u.role === 'admin' ? 'admin' : 'user'}">${u.role === 'admin' ? 'admin' : 'user'}</span>
       </div>
       ${(me && u.username === me.username)
         ? '<span class="mv-you-badge">(tú)</span>'
-        : `<button type="button" class="mv-ticket-btn mv-delete-btn mv-del-user" data-user="${escHtml(u.username)}" title="Eliminar">🗑️</button>`}
+        : `<button type="button" class="mv-ticket-btn mv-delete-btn mv-del-user" data-user="${escHtml(u.username)}" title="Eliminar"><i class="fi fi-rr-trash"></i></button>`}
     </div>
   `).join('');
 

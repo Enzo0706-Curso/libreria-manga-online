@@ -91,6 +91,16 @@
   </svg>
 
   <!-- Scripts: auth primero, luego manga, luego admin -->
+  <!-- Pantalla de carga global -->
+  <div id="loading-overlay" class="loading-overlay hidden" role="status" aria-live="polite" aria-hidden="true" aria-label="Cargando">
+    <svg viewBox="0 0 240 240" height="240" width="240" class="pl">
+      <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#816ed8" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
+      <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
+      <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70" cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
+      <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70" cy="120" cx="155" class="pl__ring pl__ring--d"></circle>
+    </svg>
+  </div>
+
   <script src="auth.js"></script>
   <script src="manga.js"></script>
   <script src="admin.js"></script>

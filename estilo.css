@@ -2391,3 +2391,165 @@ body.mv-edit-mode .mv-admin-ticket-btns { display: flex; }
     padding: 5px;
   }
 }
+
+/* ════════════════════════════════════════════════════
+   PANTALLA DE CARGA GLOBAL
+   Mismo fondo oscuro del tema para evitar saltos de color.
+   Es position:fixed → no genera CLS.
+════════════════════════════════════════════════════ */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0d0e15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Oculto = animación en pausa (no consume CPU/GPU) */
+.loading-overlay.hidden .pl__ring { animation-play-state: paused; }
+
+.pl { width: 6em; height: 6em; }
+.pl__ring { animation: ringA 2s linear infinite; }
+.pl__ring--a { stroke: #816ed8; }
+.pl__ring--b { animation-name: ringB; stroke: #7e7e7e; }
+.pl__ring--c { animation-name: ringC; stroke: #686868; }
+.pl__ring--d { animation-name: ringD; stroke: #816ed8; }
+
+@keyframes ringA {
+  from, 4% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -330; }
+  12% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -335; }
+  32% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -595; }
+  40%, 54% { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -660; }
+  62% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -665; }
+  82% { stroke-dasharray: 60 600; stroke-width: 30; stroke-dashoffset: -925; }
+  90%, to { stroke-dasharray: 0 660; stroke-width: 20; stroke-dashoffset: -990; }
+}
+
+@keyframes ringB {
+  from, 12% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -110; }
+  20% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -115; }
+  40% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -195; }
+  48%, 62% { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -220; }
+  70% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -225; }
+  90% { stroke-dasharray: 20 200; stroke-width: 30; stroke-dashoffset: -305; }
+  98%, to { stroke-dasharray: 0 220; stroke-width: 20; stroke-dashoffset: -330; }
+}
+
+@keyframes ringC {
+  from { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
+  8% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -5; }
+  28% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
+  36%, 58% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -220; }
+  66% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -225; }
+  86% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -395; }
+  94%, to { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+}
+
+@keyframes ringD {
+  from, 8% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: 0; }
+  16% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -5; }
+  36% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -175; }
+  44%, 50% { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -220; }
+  58% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -225; }
+  78% { stroke-dasharray: 40 400; stroke-width: 30; stroke-dashoffset: -395; }
+  86%, to { stroke-dasharray: 0 440; stroke-width: 20; stroke-dashoffset: -440; }
+}
+
+/* ════════════════════════════════════════════════════
+   SIN RESULTADOS: lupa "durmiendo" con letras Z
+════════════════════════════════════════════════════ */
+.no-results-container { margin-bottom: 0.75rem; }
+
+.sleeping-search {
+  position: relative;
+  display: inline-block;
+}
+
+.icono-lupa-grande {
+  display: block;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.z-container {
+  position: absolute;
+  top: -15px;
+  right: -25px;
+  pointer-events: none;
+}
+
+.z {
+  position: absolute;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff4b6e;
+  opacity: 0;
+}
+
+.z-1 { animation: swayUpToRight 2s ease-out infinite; }
+.z-2 { animation: swayUpToRight 2s ease-out 0.5s infinite; }
+.z-3 { animation: swayUpToRight 2s ease-out 1s infinite; }
+.z-4 { animation: swayUpToRight 2s ease-out 1.5s infinite; }
+
+@keyframes swayUpToRight {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(60px, -70px) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   ICONOS VECTORIALES (reemplazan a los emojis)
+════════════════════════════════════════════════════ */
+.mv-input-container:has(.mv-input-icon) { position: relative; }
+.mv-input-container .mv-input-icon {
+  position: absolute;
+  left: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8a8f9c;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  transition: color 0.2s;
+}
+.mv-input-container:focus-within .mv-input-icon { color: #e94560; }
+.mv-input-icon + input { padding-left: 2.7rem !important; }
+
+.mv-btn .fi,
+.mv-nadd-title .fi,
+.mv-modal-icon .fi,
+.mv-user-icon .fi,
+.mv-user-row-icon .fi,
+.mv-ticket-btn .fi,
+.mv-modal-close .fi,
+.mv-success .fi,
+.mv-radio-row .fi { display: inline-block; line-height: 1; vertical-align: -0.12em; }
+
+.mv-modal-icon .fi { font-size: 2rem; color: #e94560; }
+.mv-modal-close .fi { font-size: 1.2rem; }
+
+/* Fila de links: se quitó la columna del icono (emoji) */
+.mv-link-row { grid-template-columns: 1fr 2fr 2rem; }
+
+@media (max-width: 768px) {
+  .mv-link-row { grid-template-columns: 1fr 1fr 1.8rem; }
+}
