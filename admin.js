@@ -366,7 +366,7 @@ function inyectarBotonFlotante() {
   if (document.getElementById('mv-float-btn-container')) return;
   if (!isAdmin()) return; // el boton de Modo Edicion (y los demas) solo existen para el super usuario
 
-  // ── Botones flip (esquina inferior derecha) ──
+    // ── Botones flip (esquina inferior derecha) ──
   const btnHTML = `
     <div id="mv-float-btn-container" class="mv-float-btn-container">
       

@@ -2268,3 +2268,126 @@ body.mv-edit-mode .mv-admin-ticket-btns { display: flex; }
 .mv-float-btn-container { display: none; }
 /* Visible solo cuando se despliega desde el botón de ajustes */
 .mv-float-btn-container.show-admin-menu { display: flex !important; }
+
+/* ════════════════════════════════════════════════════
+   FAVORITOS — marcador (Uiverse.io por Galahhad)
+   Flota sobre la portada (.t-main es position:relative)
+════════════════════════════════════════════════════ */
+.ui-bookmark {
+  --icon-size: 24px;
+  --icon-secondary-color: rgb(200, 200, 200);
+  --icon-hover-color: rgb(255, 255, 255);
+  --icon-primary-color: gold;
+  --icon-circle-border: 1px solid var(--icon-primary-color);
+  --icon-circle-size: 35px;
+  --icon-anmt-duration: 0.3s;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.ui-bookmark input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.ui-bookmark .bookmark {
+  width: var(--icon-size);
+  height: auto;
+  fill: var(--icon-secondary-color);
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transform-origin: top;
+}
+
+.ui-bookmark .bookmark svg { width: 100%; height: auto; display: block; }
+
+.bookmark::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 30px 0 -4px var(--icon-primary-color),
+    30px 0 0 -4px var(--icon-primary-color),
+    0 -30px 0 -4px var(--icon-primary-color),
+    -30px 0 0 -4px var(--icon-primary-color),
+    -22px 22px 0 -4px var(--icon-primary-color),
+    -22px -22px 0 -4px var(--icon-primary-color),
+    22px -22px 0 -4px var(--icon-primary-color),
+    22px 22px 0 -4px var(--icon-primary-color);
+  border-radius: 50%;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.bookmark::before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: var(--icon-circle-border);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ui-bookmark:hover .bookmark {
+  fill: var(--icon-hover-color);
+}
+
+.ui-bookmark input:checked + .bookmark::after {
+  animation: circles var(--icon-anmt-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: var(--icon-anmt-duration);
+}
+
+.ui-bookmark input:checked + .bookmark {
+  fill: var(--icon-primary-color);
+  animation: bookmark var(--icon-anmt-duration) forwards;
+  transition-delay: 0.3s;
+}
+
+.ui-bookmark input:checked + .bookmark::before {
+  animation: circle var(--icon-anmt-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: var(--icon-anmt-duration);
+}
+
+@keyframes bookmark {
+  50% { transform: scaleY(0.6); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes circle {
+  from { width: 0; height: 0; opacity: 0; }
+  90% { width: var(--icon-circle-size); height: var(--icon-circle-size); opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes circles {
+  from { transform: scale(0); }
+  40% { opacity: 1; }
+  to { transform: scale(0.8); opacity: 0; }
+}
+
+/* Móvil: marcador más compacto para tarjetas de 2 columnas */
+@media (max-width: 768px) {
+  .ui-bookmark {
+    --icon-size: 16px;
+    --icon-circle-size: 26px;
+    top: 6px;
+    left: 6px;
+    padding: 5px;
+  }
+}

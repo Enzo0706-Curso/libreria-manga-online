@@ -160,6 +160,33 @@ const BD_MANGAS = [
 /* ═══════════════════════════════════════════════════
    2. ESTADO DE LA APLICACIÓN
 ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   FAVORITOS — persistencia en localStorage
+   Clave: "mangas_favoritos" (array de IDs como texto)
+═══════════════════════════════════════════════════ */
+const CLAVE_FAVORITOS = "mangas_favoritos";
+
+function getFavoritos() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(CLAVE_FAVORITOS) || "[]");
+    return Array.isArray(arr) ? arr.map(String) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function esFavorito(id) {
+  return getFavoritos().includes(String(id));
+}
+
+function setFavorito(id, marcado) {
+  const sid = String(id);
+  const favs = getFavoritos().filter(f => f !== sid);
+  if (marcado) favs.push(sid);
+  localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favs));
+}
+
+
 const estado = {
   filtroActivo: "todos",
   textoBusqueda: "",
@@ -198,6 +225,10 @@ function obtenerMangasFiltrados() {
       manga.nombre.toLowerCase().includes(texto) ||
       (manga.descripcion || '').toLowerCase().includes(texto);
 
+    // Filtro especial: solo los mangas guardados como favoritos
+    if (estado.filtroActivo === "favoritos") {
+      return esFavorito(manga.id) && cumpleBusqueda;
+    }
     return cumpleTipo && cumpleBusqueda;
   });
 }
@@ -253,6 +284,17 @@ function crearTicket(manga) {
               onerror="this.src='https://placehold.co/300x400/1a1a28/888?text=Sin+imagen'"
             />
             <div class="t-img-overlay"></div>
+            <!-- Marcador de favorito -->
+            <label class="ui-bookmark" data-manga-id="${manga.id}" title="Guardar en favoritos">
+              <input type="checkbox" class="bookmark-checkbox">
+              <div class="bookmark">
+                <svg viewBox="0 0 32 32">
+                  <g>
+                    <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
+                  </g>
+                </svg>
+              </div>
+            </label>
             <div class="t-content">
               <div class="t-header">
                 <span class="t-type-badge">${manga.tipo}</span>
@@ -348,6 +390,17 @@ function crearTicket(manga) {
     : `mv_notes_guest_${manga.id}`;
 
   const textarea = wrapper.querySelector(".t-notes-area");
+
+  // ── Favorito: estado inicial y cambios ──
+  const favCheck = wrapper.querySelector(".bookmark-checkbox");
+  favCheck.checked = esFavorito(manga.id);
+  favCheck.addEventListener("change", () => {
+    setFavorito(manga.id, favCheck.checked);
+    // Si estamos viendo "Favoritos" y se desmarca, quitar la tarjeta (tras la animación)
+    if (estado.filtroActivo === "favoritos" && !favCheck.checked) {
+      setTimeout(renderizarGrid, 450);
+    }
+  });
   textarea.value = localStorage.getItem(notesKey) || '';
   textarea.addEventListener("input", () => {
     localStorage.setItem(notesKey, textarea.value);
@@ -374,8 +427,12 @@ function renderizarGrid() {
     grid.innerHTML = `
       <div class="empty-state">
         <span class="empty-icon"><i class="fi fi-rr-search"></i></span>
-        <p>No se encontraron resultados para <strong>"${estado.textoBusqueda}"</strong></p>
-        <p style="margin-top:0.5rem;font-size:0.85rem;">Prueba con otro nombre o cambia el filtro.</p>
+        <p>${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
+          ? "Aún no has agregado mangas a tus favoritos"
+          : `No se encontraron resultados para <strong>"${estado.textoBusqueda}"</strong>`}</p>
+        <p style="margin-top:0.5rem;font-size:0.85rem;">${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
+          ? "Pulsa el marcador de una tarjeta para guardarla aquí."
+          : "Prueba con otro nombre o cambia el filtro."}</p>
       </div>
     `;
   } else {
