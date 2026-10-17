@@ -2717,7 +2717,7 @@ i.fi { display: inline-block; min-width: 1em; }
   .button-container { gap: 18px; }
 }
 
-/* --- INTRO SPLASH SCREEN (ESTILO MARVEL STUDIOS) --- */
+/* --- INTRO SPLASH SCREEN (ESTILO MARVEL STUDIOS - GPU OPTIMIZADO) --- */
 .intro-loader {
   position: fixed;
   top: 0;
@@ -2730,6 +2730,8 @@ i.fi { display: inline-block; min-width: 1em; }
   align-items: center;
   z-index: 10000;
   overflow: hidden;
+  transform: translateZ(0); /* Forzar capa GPU */
+  backface-visibility: hidden;
 }
 
 /* Ya visto en esta sesión: ni se pinta */
@@ -2744,7 +2746,7 @@ i.fi { display: inline-block; min-width: 1em; }
   max-width: 95vw;
 }
 
-/* EFECTO MARVEL CON PANELES EN MÁXIMA NITIDEZ
+/* Optimización del texto con recorte de paneles (PC y Móvil)
    Se aplica también a .vault-title .letter porque en Chrome/Edge cuando un hijo
    tiene display:inline-block + transform, necesita su propio background-clip:text */
 .marvel-text,
@@ -2756,23 +2758,24 @@ i.fi { display: inline-block; min-width: 1em; }
     url('https://tse2.mm.bing.net/th/id/OIP.ME5L_q4-y42pRVgzhI7FewHaLz?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'),
     url('https://tse2.mm.bing.net/th/id/OIP.PKQ9e9wG5X7yqBs3DnpHBwHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');
 
-  background-size: 45% auto !important;
+  background-size: 50% auto !important;
   background-repeat: repeat-x !important;
   background-position: 0% 50%;
 
-  /* Forzar nitidez máxima */
+  /* Nitidez y rendimiento de renderizado */
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  will-change: background-position, transform;
+  transform: translate3d(0, 0, 0); /* Aceleración 3D en GPU */
   
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 0 35px rgba(255, 75, 110, 0.85));
-  animation: marvelRoll 7s linear infinite !important;
+  filter: drop-shadow(0 0 25px rgba(255, 75, 110, 0.7));
+  animation: marvelRoll 8s linear infinite !important;
 }
 
 /* TÍTULO VAULT GIGANTE */
 .vault-title {
-  font-size: 7.5rem !important; /* Tamaño súper gigante */
+  font-size: 7.5rem !important;
   font-weight: 900;
   letter-spacing: 12px;
   line-height: 1;
@@ -2781,10 +2784,12 @@ i.fi { display: inline-block; min-width: 1em; }
   justify-content: center;
 }
 
-/* Permitir animación individual en cada letra */
+/* Optimización de cada letra individual */
 .vault-title .letter {
   display: inline-block;
   background-size: 220% auto !important;
+  will-change: transform, opacity;
+  transform: translateZ(0);
   opacity: 0; /* Anime.js anima cada letra de 0 a 1 */
 }
 
@@ -2795,24 +2800,31 @@ i.fi { display: inline-block; min-width: 1em; }
   font-weight: 800;
   margin-top: 40px !important;
   opacity: 0;
+  will-change: transform, opacity;
 }
 
-/* ANIMACIÓN DE DESPLAZAMIENTO LENTO DE PANELES */
 @keyframes marvelRoll {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-/* OPTIMIZACIÓN RESPONSIVE PARA MÓVILES */
+/* MODO RENDIMIENTO EXTREMO PARA MÓVILES (Evita lag y caída de FPS) */
 @media (max-width: 768px) {
   .vault-title {
-    font-size: 4rem !important;
-    letter-spacing: 6px;
+    font-size: 3.8rem !important;
+    letter-spacing: 4px;
+  }
+  .marvel-text,
+  .vault-title .letter {
+    /* Reducir drásticamente el peso del filtro drop-shadow en teléfonos */
+    filter: drop-shadow(0 0 12px rgba(255, 75, 110, 0.5)) !important;
+    background-size: 80% auto !important; /* Menos repeticiones de textura en RAM móvil */
+    animation: marvelRoll 10s linear infinite !important;
   }
   .sub-brand {
-    font-size: 0.8rem !important;
-    letter-spacing: 6px !important;
-    margin-top: 25px !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 5px !important;
+    margin-top: 20px !important;
   }
 }
 

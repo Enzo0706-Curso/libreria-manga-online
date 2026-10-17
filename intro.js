@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ¿Ya se mostró en esta sesión? ¿El usuario prefiere menos movimiento?
   let yaVisto = false;
-  try { yaVisto = sessionStorage.getItem('mv_intro_marvel_v6') === '1'; } catch (e) {}
+  try { yaVisto = sessionStorage.getItem('mv_intro_marvel_v7') === '1'; } catch (e) {}
   const menosMovimiento = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     quitar();
     return;
   }
-  try { sessionStorage.setItem('mv_intro_marvel_v6', '1'); } catch (e) {}
+  try { sessionStorage.setItem('mv_intro_marvel_v7', '1'); } catch (e) {}
 
   // Red de seguridad: pase lo que pase, el splash nunca se queda pegado
-  const seguro = setTimeout(quitar, 12000);
+  const seguro = setTimeout(quitar, 10000);
 
   // Compatibilidad Anime.js v4: exponer anime.random usando anime.utils.random
   if (typeof anime.random !== 'function') {
@@ -37,21 +37,26 @@ document.addEventListener('DOMContentLoaded', () => {
         : Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  // Detectar si es móvil para aligerar cálculos de animación
+  const isMobile = window.innerWidth <= 768;
+  const rangeX = isMobile ? 80 : 200;
+  const rangeY = isMobile ? 60 : 150;
+
   const { createTimeline, stagger } = anime;
 
   const tl = createTimeline({
     onComplete: () => {
       clearTimeout(seguro);
-      quitar();
+      quitar(); // Elimina el nodo del DOM para liberar 100% de memoria RAM y GPU
     }
   });
 
-  // 1. Animación caricaturesca de entrada: cada letra viene desde coordenadas y ángulos locos
+  // 1. Entrada caricaturesca optimizada (rangos adaptados a móvil/PC)
   tl.add('.vault-title .letter', {
-    translateX: () => anime.random(-250, 250),
-    translateY: () => anime.random(-200, 200),
-    rotate: () => anime.random(-360, 360),
-    scale: [0, 1.4],
+    translateX: () => anime.random(-rangeX, rangeX),
+    translateY: () => anime.random(-rangeY, rangeY),
+    rotate: () => anime.random(-180, 180),
+    scale: [0, 1.2],
     opacity: [0, 1],
     duration: 0
   })
@@ -61,28 +66,28 @@ document.addEventListener('DOMContentLoaded', () => {
     rotate: 0,
     scale: 1,
     opacity: 1,
-    duration: 1200,
-    delay: stagger(150), // Desfasaje entre cada letra estilo caricatura
-    ease: 'outElastic(1, .5)' // Rebote divertido al encajar en el centro
+    duration: isMobile ? 900 : 1200,
+    delay: stagger(isMobile ? 100 : 140),
+    ease: 'outElastic(1, .6)'
   })
   // 2. Aparición de la submarca inferior
   .add('.sub-brand', {
     opacity: [0, 1],
-    translateY: [15, 0],
-    duration: 800,
+    translateY: [10, 0],
+    duration: 600,
     ease: 'outQuad'
-  }, '-=400')
-  // 3. Pausa prolongada contemplando los paneles de manga
+  }, '-=300')
+  // 3. Pausa apreciando los paneles de manga
   .add('.vault-title', {
-    scale: [1, 1.05],
-    duration: 4500,
+    scale: [1, 1.04],
+    duration: isMobile ? 3000 : 4000,
     ease: 'linear'
   })
-  // 4. Salida cinematográfica limpia
+  // 4. Salida rápida y fluida
   .add('#intro-loader', {
     opacity: [1, 0],
-    scale: [1, 1.1],
-    duration: 1000,
+    scale: [1, 1.05],
+    duration: 800,
     ease: 'inOutQuad'
   });
 });
