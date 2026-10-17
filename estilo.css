@@ -2741,62 +2741,78 @@ i.fi { display: inline-block; min-width: 1em; }
   align-items: center;
   text-align: center;
   padding: 20px;
+  max-width: 95vw;
 }
 
-/* TÍTULO EN JAPONÉS CON PANELES DE MANGA EN MÁXIMA CALIDAD */
-.japanese-title {
-  font-size: 5.5rem !important;
-  font-weight: 900;
-  line-height: 1.1;
-  font-family: 'Hiragino Sans', 'Meiryo', 'Noto Sans JP', sans-serif;
+/* EFECTO MARVEL CON PANELES EN MÁXIMA NITIDEZ
+   Se aplica también a .vault-title .letter porque en Chrome/Edge cuando un hijo
+   tiene display:inline-block + transform, necesita su propio background-clip:text */
+.marvel-text,
+.vault-title .letter {
   color: transparent;
-  
-  /* Enlaces directos de alta resolución de los paneles */
   background-image: 
     url('https://i.pinimg.com/originals/e4/7a/0b/e47a0b8cb6ebeb9902e661f3a7478361.jpg'),
     url('https://th.bing.com/th/id/R.7fc04b0677e46b6b2e04ab05d1b6b7af?rik=Pys3xGCYjuivow&pid=ImgRaw&r=0'),
     url('https://tse2.mm.bing.net/th/id/OIP.ME5L_q4-y42pRVgzhI7FewHaLz?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'),
     url('https://tse2.mm.bing.net/th/id/OIP.PKQ9e9wG5X7yqBs3DnpHBwHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');
 
-  /* AJUSTE DE TAMAÑO REDUCIDO PARA VER MÁS VIÑETAS */
-  background-size: 50% auto !important;
+  background-size: 45% auto !important;
   background-repeat: repeat-x !important;
   background-position: 0% 50%;
 
-  /* FORZAR MÁXIMA NITIDEZ Y CALIDAD DE IMAGEN */
+  /* Forzar nitidez máxima */
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 0 35px rgba(255, 75, 110, 0.8));
-  animation: marvelRoll 7s linear infinite !important; /* Aumentado a 7 segundos para mayor suavidad y lentitud */
-  opacity: 0; /* Anime.js lo anima de 0 a 1 con zoom */
+  filter: drop-shadow(0 0 35px rgba(255, 75, 110, 0.85));
+  animation: marvelRoll 7s linear infinite !important;
 }
 
-.sub-japanese {
-  font-size: 3.8rem !important;
-  display: block;
+/* TÍTULO VAULT GIGANTE */
+.vault-title {
+  font-size: 7.5rem !important; /* Tamaño súper gigante */
+  font-weight: 900;
+  letter-spacing: 12px;
+  line-height: 1;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Permitir animación individual en cada letra */
+.vault-title .letter {
+  display: inline-block;
+  background-size: 220% auto !important;
+  opacity: 0; /* Anime.js anima cada letra de 0 a 1 */
 }
 
 .sub-brand {
-  font-size: 1.3rem !important;
-  letter-spacing: 12px !important;
+  font-size: 1.4rem !important;
+  letter-spacing: 14px !important;
   color: #816ed8;
   font-weight: 800;
-  margin-top: 35px !important;
+  margin-top: 40px !important;
   opacity: 0;
 }
 
-/* Animación fluida de la cinta de paneles */
+/* ANIMACIÓN DE DESPLAZAMIENTO LENTO DE PANELES */
 @keyframes marvelRoll {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
+/* OPTIMIZACIÓN RESPONSIVE PARA MÓVILES */
 @media (max-width: 768px) {
-  .japanese-title { font-size: 3rem !important; background-size: 70% auto !important; }
-  .sub-japanese { font-size: 2rem !important; }
-  .sub-brand { font-size: 0.8rem !important; letter-spacing: 6px !important; }
+  .vault-title {
+    font-size: 4rem !important;
+    letter-spacing: 6px;
+  }
+  .sub-brand {
+    font-size: 0.8rem !important;
+    letter-spacing: 6px !important;
+    margin-top: 25px !important;
+  }
 }
 
