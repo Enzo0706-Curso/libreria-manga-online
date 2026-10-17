@@ -296,16 +296,18 @@ function crearTicket(manga) {
 
           <!-- PARTE SUPERIOR: portada + info -->
           <div class="t-main">
-            <img
-              class="t-cover"
-              src="${imgSrc}"
-              alt="Portada de ${manga.nombre}"
-              loading="lazy"
-              decoding="async"
-              width="300"
-              height="400"
-              onerror="this.src='https://placehold.co/300x400/1a1a28/888?text=Sin+imagen'"
-            />
+            <div class="t-cover-container">
+              <img
+                class="t-cover"
+                src="${imgSrc}"
+                alt="Portada de ${manga.nombre}"
+                loading="lazy"
+                decoding="async"
+                width="300"
+                height="400"
+                onerror="this.src='https://placehold.co/300x400/1a1a28/888?text=Sin+imagen'"
+              />
+            </div>
             <div class="t-img-overlay"></div>
             <!-- Marcador de favorito -->
             <label class="ui-bookmark" data-manga-id="${manga.id}" title="Guardar en favoritos">
@@ -439,52 +441,58 @@ function crearTicket(manga) {
  * Se llama cada vez que cambia el filtro o la búsqueda.
  */
 function renderizarGrid() {
+  // ── FASE DE LECTURA (sin mutar el DOM para evitar reflows forzados) ──
   const grid = document.getElementById("mangaGrid");
   const contador = document.getElementById("contadorResultados");
   const mangasFiltrados = obtenerMangasFiltrados();
-
-  // Limpiar el grid actual
-  grid.innerHTML = "";
-
-  if (mangasFiltrados.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="no-results-container">
-          <div class="sleeping-search">
-            <i class="fi fi-rr-search icono-lupa-grande"></i>
-            <div class="z-container">
-              <div class="z z-1">Z</div>
-              <div class="z z-2">Z</div>
-              <div class="z z-3">Z</div>
-              <div class="z z-4">Z</div>
-            </div>
-          </div>
-        </div>
-        <p>${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
-          ? "Aún no has agregado mangas a tus favoritos"
-          : `No se encontraron resultados para <strong>"${estado.textoBusqueda}"</strong>`}</p>
-        <p style="margin-top:0.5rem;font-size:0.85rem;">${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
-          ? "Pulsa el marcador de una tarjeta para guardarla aquí."
-          : "Prueba con otro nombre o cambia el filtro."}</p>
-      </div>
-    `;
-  } else {
-    // Usar DocumentFragment para insertar todo de una sola vez (mejor rendimiento)
-    const fragmento = document.createDocumentFragment();
-    mangasFiltrados.forEach(manga => {
-      fragmento.appendChild(crearTicket(manga));
-    });
-    // Las primeras 4 portadas están sobre el pliegue: cargarlas ya (mejora LCP); el resto, lazy
-    fragmento.querySelectorAll('.t-cover').forEach((img, i) => { if (i < 4) img.loading = 'eager'; });
-    grid.appendChild(fragmento);
-  }
-
-  // Actualizar el contador de resultados
   const total = BD_MANGAS.length;
   const mostrados = mangasFiltrados.length;
-  contador.textContent = mostrados === total
+  const textoContador = mostrados === total
     ? `${total} títulos en tu biblioteca`
     : `Mostrando ${mostrados} de ${total} títulos`;
+
+  // Construir nodos fuera del DOM vivo
+  const fragmento = document.createDocumentFragment();
+  if (mangasFiltrados.length === 0) {
+    const emptyWrapper = document.createElement("div");
+    emptyWrapper.className = "empty-state";
+    emptyWrapper.innerHTML = `
+      <div class="no-results-container">
+        <div class="sleeping-search">
+          <i class="fi fi-rr-search icono-lupa-grande"></i>
+          <div class="z-container">
+            <div class="z z-1">Z</div>
+            <div class="z z-2">Z</div>
+            <div class="z z-3">Z</div>
+            <div class="z z-4">Z</div>
+          </div>
+        </div>
+      </div>
+      <p>${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
+        ? "Aún no has agregado mangas a tus favoritos"
+        : `No se encontraron resultados para <strong>"${estado.textoBusqueda}"</strong>`}</p>
+      <p style="margin-top:0.5rem;font-size:0.85rem;">${(estado.filtroActivo === "favoritos" && !estado.textoBusqueda)
+        ? "Pulsa el marcador de una tarjeta para guardarla aquí."
+        : "Prueba con otro nombre o cambia el filtro."}</p>
+    `;
+    fragmento.appendChild(emptyWrapper);
+  } else {
+    mangasFiltrados.forEach((manga, i) => {
+      const card = crearTicket(manga);
+      if (i < 4) {
+        const img = card.querySelector('.t-cover');
+        if (img) {
+          img.loading = 'eager';
+          if (i === 0) img.setAttribute('fetchpriority', 'high');
+        }
+      }
+      fragmento.appendChild(card);
+    });
+  }
+
+  // ── FASE DE ESCRITURA (una sola mutación atómica en el DOM) ──
+  grid.replaceChildren(fragmento);
+  contador.textContent = textoContador;
 }
 
 

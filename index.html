@@ -3,13 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Enzo Wukong Mangas - La bóveda otaku con la mejor biblioteca de mangas y manhwas online. Lee tus títulos favoritos con una interfaz rápida, futurista y optimizada." />
   <title>MangaVault — Tu Biblioteca de Manga & Manwha</title>
+
+  <!-- Preconnect a dominios críticos externos para acelerar LCP y FCP -->
   <link rel="preconnect" href="https://cdn-uicons.flaticon.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://cdn.shademanga.com" crossorigin />
+  <link rel="preconnect" href="https://media.imagesolymp.xyz" crossorigin />
+  <link rel="preconnect" href="https://s1.cdnlxd.xyz" crossorigin />
+  <link rel="dns-prefetch" href="https://thumbs.visormanga.com" />
+  <link rel="dns-prefetch" href="https://i.pinimg.com" />
+  <link rel="dns-prefetch" href="https://th.bing.com" />
+  <link rel="dns-prefetch" href="https://tse2.mm.bing.net" />
+
+  <!-- Preload del elemento LCP principal (logo) -->
+  <link rel="preload" as="image" href="logo.png" fetchpriority="high" />
+
   <!-- Iconos: carga sin bloquear el primer pintado -->
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" /></noscript>
   <!-- CSS crítico (minificado). Se deja bloqueante a propósito: evita el "flash" sin estilos -->
-  <link rel="stylesheet" href="estilo.min.css?v=7b2c14f6" />
+  <link rel="stylesheet" href="estilo.min.css?v=3f457551" />
   <!-- Fondo estrellado: decorativo, carga sin bloquear -->
   <link rel="stylesheet" href="fondo.min.css?v=a7bf1986" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="fondo.min.css?v=a7bf1986" /></noscript>
@@ -56,6 +71,7 @@
           width="723"
           height="1024"
           fetchpriority="high"
+          loading="eager"
           decoding="async"
         />
         <!-- Partículas flotantes (animadas por CSS) -->
@@ -66,6 +82,8 @@
         <span class="logo-particle lp5"></span>
         <span class="logo-particle lp6"></span>
       </div>
+      <!-- Contenedor reservado desde el HTML inicial para evitar CLS al cargar admin.js -->
+      <div id="mv-header-btn-area" class="mv-header-auth"></div>
     </div>
   </header>
 
@@ -129,10 +147,10 @@
     </svg>
   </div>
 
-  <script src="intro.js?v=03be0ba5" defer></script>
+  <script src="intro.js?v=aa85cb7d" defer></script>
   <script src="auth.js?v=bd8622b1" defer></script>
-  <script src="manga.js?v=8bd143ce" defer></script>
-  <script src="admin.js?v=d57405ef" defer></script>
+  <script src="manga.js?v=a54a4da4" defer></script>
+  <script src="admin.js?v=48d7e29c" defer></script>
   <script>
     // Iniciar el panel de admin (barra de sesión, botón de ajustes, modales) cuando todo cargó.
     // Los scripts con defer aún NO existen mientras corre este script inline, por eso se llama

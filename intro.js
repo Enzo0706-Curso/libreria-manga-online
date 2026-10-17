@@ -13,11 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('no-intro');
   };
 
-  // ¿Ya se mostró en esta sesión? ¿El usuario prefiere menos movimiento?
+  // ── FASE DE LECTURA (sin tocar el DOM para evitar reflows forzados) ──
   let yaVisto = false;
   try { yaVisto = sessionStorage.getItem('mv_intro_marvel_v7') === '1'; } catch (e) {}
   const menosMovimiento = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia
+    ? window.matchMedia('(max-width: 768px)').matches
+    : false;
 
   // Si la librería no cargó (CDN caído / sin conexión) NO se bloquea la página
   if (yaVisto || menosMovimiento || typeof anime === 'undefined') {
@@ -37,57 +40,52 @@ document.addEventListener('DOMContentLoaded', () => {
         : Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // Detectar si es móvil para aligerar cálculos de animación
-  const isMobile = window.innerWidth <= 768;
   const rangeX = isMobile ? 80 : 200;
   const rangeY = isMobile ? 60 : 150;
 
-  const { createTimeline, stagger } = anime;
+  // ── FASE DE ESCRITURA (agrupada en el siguiente frame de pintado) ──
+  // Se pasan rangos explícitos [desde, hasta] para que Anime.js no tenga que
+  // consultar getComputedStyle / offsetWidth tras mutar estilos (0 ms de reflow).
+  requestAnimationFrame(() => {
+    const { createTimeline, stagger } = anime;
 
-  const tl = createTimeline({
-    onComplete: () => {
-      clearTimeout(seguro);
-      quitar(); // Elimina el nodo del DOM para liberar 100% de memoria RAM y GPU
-    }
-  });
+    const tl = createTimeline({
+      onComplete: () => {
+        clearTimeout(seguro);
+        quitar(); // Elimina el nodo del DOM para liberar 100% de memoria RAM y GPU
+      }
+    });
 
-  // 1. Entrada caricaturesca optimizada (rangos adaptados a móvil/PC)
-  tl.add('.vault-title .letter', {
-    translateX: () => anime.random(-rangeX, rangeX),
-    translateY: () => anime.random(-rangeY, rangeY),
-    rotate: () => anime.random(-180, 180),
-    scale: [0, 1.2],
-    opacity: [0, 1],
-    duration: 0
-  })
-  .add('.vault-title .letter', {
-    translateX: 0,
-    translateY: 0,
-    rotate: 0,
-    scale: 1,
-    opacity: 1,
-    duration: isMobile ? 900 : 1200,
-    delay: stagger(isMobile ? 100 : 140),
-    ease: 'outElastic(1, .6)'
-  })
-  // 2. Aparición de la submarca inferior
-  .add('.sub-brand', {
-    opacity: [0, 1],
-    translateY: [10, 0],
-    duration: 600,
-    ease: 'outQuad'
-  }, '-=300')
-  // 3. Pausa apreciando los paneles de manga
-  .add('.vault-title', {
-    scale: [1, 1.04],
-    duration: isMobile ? 3000 : 4000,
-    ease: 'linear'
-  })
-  // 4. Salida rápida y fluida
-  .add('#intro-loader', {
-    opacity: [1, 0],
-    scale: [1, 1.05],
-    duration: 800,
-    ease: 'inOutQuad'
+    // 1. Entrada caricaturesca en un solo paso [desde, hasta] (sin lecturas intermedias del DOM)
+    tl.add('.vault-title .letter', {
+      translateX: () => [anime.random(-rangeX, rangeX), 0],
+      translateY: () => [anime.random(-rangeY, rangeY), 0],
+      rotate: () => [anime.random(-180, 180), 0],
+      scale: [0, 1],
+      opacity: [0, 1],
+      duration: isMobile ? 900 : 1200,
+      delay: stagger(isMobile ? 100 : 140),
+      ease: 'outElastic(1, .6)'
+    })
+    // 2. Aparición de la submarca inferior
+    .add('.sub-brand', {
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 600,
+      ease: 'outQuad'
+    }, '-=300')
+    // 3. Pausa apreciando los paneles de manga
+    .add('.vault-title', {
+      scale: [1, 1.04],
+      duration: isMobile ? 3000 : 4000,
+      ease: 'linear'
+    })
+    // 4. Salida rápida y fluida
+    .add('#intro-loader', {
+      opacity: [1, 0],
+      scale: [1, 1.05],
+      duration: 800,
+      ease: 'inOutQuad'
+    });
   });
 });

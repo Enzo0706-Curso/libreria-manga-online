@@ -141,14 +141,15 @@ function inyectarPanelHTML() {
    BOTÓN FLOTANTE DE LOGIN / ADMIN en header
 ───────────────────────────────────────── */
 function actualizarBotonHeader() {
-  const existing = document.getElementById('mv-header-btn-area');
-  if (existing) existing.remove();
-
   const user = getCurrentUser();
   const header = document.querySelector('.header-inner');
-  const area = document.createElement('div');
-  area.id = 'mv-header-btn-area';
-  area.className = 'mv-header-auth';
+  let area = document.getElementById('mv-header-btn-area');
+  if (!area) {
+    area = document.createElement('div');
+    area.id = 'mv-header-btn-area';
+    area.className = 'mv-header-auth';
+    header.appendChild(area);
+  }
 
   if (!user) {
     area.innerHTML = `
@@ -184,7 +185,6 @@ function actualizarBotonHeader() {
     `;
   }
 
-  header.appendChild(area);
   bindHeaderEvents();
 }
 
