@@ -2511,3 +2511,208 @@ body.mv-edit-mode .mv-admin-ticket-btns { display: flex; }
 
 /* Reserva el ancho del icono mientras carga la fuente (evita saltos de diseño / CLS) */
 i.fi { display: inline-block; min-width: 1em; }
+
+/* --- PIE DE PÁGINA (FOOTER) --- */
+.site-footer {
+  width: 100%;
+  background-color: #08080c;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px 20px 20px 20px;
+  margin-top: 60px;
+  box-sizing: border-box;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-title {
+  color: #a0a0b0;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+.footer-copy {
+  color: #606070;
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* --- BOTONES BRUTALISTAS DEL FOOTER --- */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.brutalist-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  padding: 0;
+  text-decoration: none;
+  color: #000000;
+  font-weight: bold;
+  position: relative;
+  box-shadow: 4px 4px 0px #000000;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 120px;
+  width: 120px;
+  cursor: pointer;
+  background-color: #1a1a24;
+}
+
+/* Colores personalizados por red */
+.brutalist-button.github {
+  background-color: #24292e;
+}
+.brutalist-button.github::before {
+  background-color: #333940;
+}
+
+.brutalist-button.linkedin {
+  background-color: #0077b5;
+}
+.brutalist-button.linkedin::before {
+  background-color: #005582;
+}
+
+.brutalist-button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -150%;
+  width: 300%;
+  height: 300%;
+  border-radius: 50%;
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1;
+}
+
+.brutalist-button:hover::before {
+  transform: translateX(-50%) scale(1);
+}
+
+.brutalist-button:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0px #000000;
+}
+
+.brutalist-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.openai-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  background-color: #ffffff;
+}
+
+.openai-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Logos SVG en línea: sin peticiones externas, toman el color de cada red */
+.github-logo .openai-icon { fill: #24292e; }
+.linkedin-logo .openai-icon { fill: #0077b5; }
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.brutalist-button:hover .openai-logo {
+  animation: spin 5s linear infinite;
+  width: 45px;
+  height: 45px;
+  top: 28%;
+}
+
+.brutalist-button:hover .openai-icon {
+  transform: scale(0.7);
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  z-index: 2;
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+}
+
+.button-text span:first-child {
+  font-size: 11px;
+  font-weight: 500;
+  color: #d0d0d0;
+}
+
+.button-text span:last-child {
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+}
+
+.brutalist-button:hover .button-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Teclado (Tab): mismo efecto que el hover + contorno visible */
+.brutalist-button:focus-visible { outline: 3px solid #ffffff; outline-offset: 3px; }
+.brutalist-button:focus-visible::before { transform: translateX(-50%) scale(1); }
+.brutalist-button:focus-visible .openai-logo { width: 45px; height: 45px; top: 28%; }
+.brutalist-button:focus-visible .openai-icon { transform: scale(0.7); }
+.brutalist-button:focus-visible .button-text { opacity: 1; transform: translateY(0); }
+
+/* Móviles / pantallas táctiles (no existe "hover"): se muestra directamente el estado con texto */
+@media (hover: none) {
+  .brutalist-button::before { transform: translateX(-50%) scale(1); }
+  .brutalist-button .openai-logo { width: 45px; height: 45px; top: 28%; }
+  .brutalist-button .openai-icon { transform: scale(0.7); }
+  .brutalist-button .button-text { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .site-footer { margin-top: 40px; padding: 30px 16px 20px 16px; }
+  .button-container { gap: 18px; }
+}
