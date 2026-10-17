@@ -61,7 +61,7 @@ def main():
                                           destino, len(minificado.encode("utf-8")) // 1024))
 
     html = leer("index.html")
-    for nombre in ("estilo.min.css", "fondo.min.css", "auth.js", "manga.js", "admin.js"):
+    for nombre in ("estilo.min.css", "fondo.min.css", "intro.js", "auth.js", "manga.js", "admin.js"):
         patron = r'((?:href|src)=")' + re.escape(nombre) + r'(?:\?v=[\w]*)?(")'
         html, n = re.subn(patron, r"\g<1>" + nombre + "?v=" + hash_archivo(nombre) + r"\g<2>", html)
         print("index.html: %s -> %d referencia(s) versionada(s)" % (nombre, n))

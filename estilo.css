@@ -1,4 +1,4 @@
-﻿/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
    MANGAVAULT — Hoja de estilos principal
    Organización:
    1. Variables (tokens de diseño)
@@ -2716,3 +2716,87 @@ i.fi { display: inline-block; min-width: 1em; }
   .site-footer { margin-top: 40px; padding: 30px 16px 20px 16px; }
   .button-container { gap: 18px; }
 }
+
+/* --- INTRO SPLASH SCREEN (ESTILO MARVEL STUDIOS) --- */
+.intro-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #050508;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+/* Ya visto en esta sesión: ni se pinta */
+.no-intro .intro-loader { display: none; }
+
+.marvel-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+/* TÍTULO EN JAPONÉS CON PANELES DE MANGA EN MÁXIMA CALIDAD */
+.japanese-title {
+  font-size: 5.5rem !important;
+  font-weight: 900;
+  line-height: 1.1;
+  font-family: 'Hiragino Sans', 'Meiryo', 'Noto Sans JP', sans-serif;
+  color: transparent;
+  
+  /* Enlaces directos de alta resolución de los paneles */
+  background-image: 
+    url('https://i.pinimg.com/originals/e4/7a/0b/e47a0b8cb6ebeb9902e661f3a7478361.jpg'),
+    url('https://th.bing.com/th/id/R.7fc04b0677e46b6b2e04ab05d1b6b7af?rik=Pys3xGCYjuivow&pid=ImgRaw&r=0'),
+    url('https://tse2.mm.bing.net/th/id/OIP.ME5L_q4-y42pRVgzhI7FewHaLz?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'),
+    url('https://tse2.mm.bing.net/th/id/OIP.PKQ9e9wG5X7yqBs3DnpHBwHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');
+
+  /* AJUSTE DE TAMAÑO REDUCIDO PARA VER MÁS VIÑETAS */
+  background-size: 50% auto !important;
+  background-repeat: repeat-x !important;
+  background-position: 0% 50%;
+
+  /* FORZAR MÁXIMA NITIDEZ Y CALIDAD DE IMAGEN */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 35px rgba(255, 75, 110, 0.8));
+  animation: marvelRoll 7s linear infinite !important; /* Aumentado a 7 segundos para mayor suavidad y lentitud */
+  opacity: 0; /* Anime.js lo anima de 0 a 1 con zoom */
+}
+
+.sub-japanese {
+  font-size: 3.8rem !important;
+  display: block;
+}
+
+.sub-brand {
+  font-size: 1.3rem !important;
+  letter-spacing: 12px !important;
+  color: #816ed8;
+  font-weight: 800;
+  margin-top: 35px !important;
+  opacity: 0;
+}
+
+/* Animación fluida de la cinta de paneles */
+@keyframes marvelRoll {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@media (max-width: 768px) {
+  .japanese-title { font-size: 3rem !important; background-size: 70% auto !important; }
+  .sub-japanese { font-size: 2rem !important; }
+  .sub-brand { font-size: 0.8rem !important; letter-spacing: 6px !important; }
+}
+
