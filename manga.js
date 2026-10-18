@@ -303,6 +303,7 @@ function crearTicket(manga) {
                 alt="Portada de ${manga.nombre}"
                 loading="lazy"
                 decoding="async"
+                referrerpolicy="no-referrer"
                 width="300"
                 height="400"
                 onerror="this.src='https://placehold.co/300x400/1a1a28/888?text=Sin+imagen'"
@@ -311,9 +312,9 @@ function crearTicket(manga) {
             <div class="t-img-overlay"></div>
             <!-- Marcador de favorito -->
             <label class="ui-bookmark" data-manga-id="${manga.id}" title="Guardar en favoritos">
-              <input type="checkbox" class="bookmark-checkbox">
-              <div class="bookmark">
-                <svg viewBox="0 0 32 32">
+              <input type="checkbox" class="bookmark-checkbox" aria-label="Guardar ${manga.nombre} en favoritos">
+              <div class="bookmark" aria-hidden="true">
+                <svg viewBox="0 0 32 32" role="presentation">
                   <g>
                     <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
                   </g>
@@ -330,25 +331,25 @@ function crearTicket(manga) {
           </div>
 
           <!-- PERFORACIÓN -->
-          <div class="t-perforation">
+          <div class="t-perforation" aria-hidden="true">
             <div class="t-perf-line"></div>
           </div>
 
           <!-- STUB: links + botón de giro -->
           <div class="t-stub">
-            <p class="t-stub-title"><i class="fi fi-rr-books"></i> Elige dónde leer</p>
+            <p class="t-stub-title"><i class="fi fi-rr-books" aria-hidden="true"></i> Elige dónde leer</p>
             <div class="t-links">
               ${generarLinks(manga.links)}
             </div>
 
             <!-- Botón neon para girar al reverso -->
             <div class="t-flip-row">
-              <button class="flip-btn flip-btn--to-back" title="Ver mis notas">
-                <div class="btn-a btn-l"></div>
-                <div class="btn-a btn-r"></div>
-                <div class="btn-a btn-t"></div>
-                <div class="btn-a btn-b"></div>
-                <span class="btn-text"><i class="fi fi-rr-edit"></i> Mis notas</span>
+              <button type="button" class="flip-btn flip-btn--to-back" title="Ver mis notas" aria-label="Ver mis notas personales de ${manga.nombre}">
+                <div class="btn-a btn-l" aria-hidden="true"></div>
+                <div class="btn-a btn-r" aria-hidden="true"></div>
+                <div class="btn-a btn-t" aria-hidden="true"></div>
+                <div class="btn-a btn-b" aria-hidden="true"></div>
+                <span class="btn-text"><i class="fi fi-rr-edit" aria-hidden="true"></i> Mis notas</span>
               </button>
             </div>
           </div>
@@ -361,30 +362,31 @@ function crearTicket(manga) {
       <div class="ticket-back">
 
         <div class="t-back-header">
-          <div class="t-back-icon"><i class="fi fi-rr-edit"></i></div>
+          <div class="t-back-icon" aria-hidden="true"><i class="fi fi-rr-edit"></i></div>
           <div class="t-back-title">${manga.nombre}</div>
           <div class="t-back-hint">Mis notas personales</div>
         </div>
 
-        <div class="t-back-perf">
+        <div class="t-back-perf" aria-hidden="true">
           <div class="t-perf-line"></div>
         </div>
 
         <div class="t-back-body">
-          <p class="t-notes-label"><i class="fi fi-rr-pencil"></i> Mis apuntes</p>
+          <p class="t-notes-label"><i class="fi fi-rr-pencil" aria-hidden="true"></i> Mis apuntes</p>
           <textarea
             class="t-notes-area"
+            aria-label="Mis apuntes personales sobre ${manga.nombre}"
             placeholder="Ej: Voy en el cap. 47, me quedé en la batalla del arco de Wano..."
           ></textarea>
 
           <!-- Botón neon para volver al frente -->
           <div class="t-flip-row">
-            <button class="flip-btn flip-btn--to-front" title="Volver a ver el manga">
-              <div class="btn-a btn-l"></div>
-              <div class="btn-a btn-r"></div>
-              <div class="btn-a btn-t"></div>
-              <div class="btn-a btn-b"></div>
-              <span class="btn-text"><i class="fi fi-rr-arrow-left"></i> Volver</span>
+            <button type="button" class="flip-btn flip-btn--to-front" title="Volver a ver el manga" aria-label="Volver a la portada de ${manga.nombre}">
+              <div class="btn-a btn-l" aria-hidden="true"></div>
+              <div class="btn-a btn-r" aria-hidden="true"></div>
+              <div class="btn-a btn-t" aria-hidden="true"></div>
+              <div class="btn-a btn-b" aria-hidden="true"></div>
+              <span class="btn-text"><i class="fi fi-rr-arrow-left" aria-hidden="true"></i> Volver</span>
             </button>
           </div>
         </div>
@@ -458,7 +460,7 @@ function renderizarGrid() {
     emptyWrapper.className = "empty-state";
     emptyWrapper.innerHTML = `
       <div class="no-results-container">
-        <div class="sleeping-search">
+        <div class="sleeping-search" aria-hidden="true">
           <i class="fi fi-rr-search icono-lupa-grande"></i>
           <div class="z-container">
             <div class="z z-1">Z</div>
@@ -503,11 +505,15 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   renderizarGrid();
 });
 
-// Botones de filtro por tipo
+// Botones de filtro por tipo (actualiza estado visual y atributo aria-pressed)
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".filter-btn").forEach(b => {
+      b.classList.remove("active");
+      b.setAttribute("aria-pressed", "false");
+    });
     btn.classList.add("active");
+    btn.setAttribute("aria-pressed", "true");
     mostrarCarga(() => {
       estado.filtroActivo = btn.dataset.filter;
       renderizarGrid();
@@ -520,3 +526,4 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
    5. INICIO DE LA APLICACIÓN
 ═══════════════════════════════════════════════════ */
 renderizarGrid();
+

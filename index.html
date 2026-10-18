@@ -13,10 +13,10 @@
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" /></noscript>
   <!-- CSS crítico (minificado). Se deja bloqueante a propósito: evita el "flash" sin estilos -->
-  <link rel="stylesheet" href="estilo.min.css?v=3a6f5a45" />
+  <link rel="stylesheet" href="estilo.min.css?v=2.0" />
   <!-- Fondo estrellado: decorativo, carga sin bloquear -->
-  <link rel="stylesheet" href="fondo.min.css?v=a7bf1986" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="fondo.min.css?v=a7bf1986" /></noscript>
+  <link rel="stylesheet" href="fondo.min.css?v=2.0" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="fondo.min.css?v=2.0" /></noscript>
   <!-- Intro: si ya se vio en esta sesión, ocultarla desde el primer pintado (sin parpadeo) -->
   <script>try{if(sessionStorage.getItem("mv_intro_marvel_v7")==="1")document.documentElement.classList.add("no-intro")}catch(e){}</script>
   <noscript><style>.intro-loader{display:none!important}</style></noscript>
@@ -41,7 +41,7 @@
   <!-- ═══════════════════════════════════════════
        FONDO ANIMADO ESTRELLADO
   ═══════════════════════════════════════════ -->
-  <div class="bg-animation-container">
+  <div class="bg-animation-container" aria-hidden="true">
     <div id="stars"></div>
     <div id="stars2"></div>
     <div id="stars3"></div>
@@ -56,7 +56,7 @@
         <img
           class="logo-img"
           src="logo.png"
-          alt="Logo MangaVault"
+          alt="Logotipo oficial de Enzo Wukong Mangas — Pareja de personajes de manga"
           width="89"
           height="126"
           fetchpriority="high"
@@ -64,12 +64,12 @@
           decoding="async"
         />
         <!-- Partículas flotantes (animadas por CSS) -->
-        <span class="logo-particle lp1"></span>
-        <span class="logo-particle lp2"></span>
-        <span class="logo-particle lp3"></span>
-        <span class="logo-particle lp4"></span>
-        <span class="logo-particle lp5"></span>
-        <span class="logo-particle lp6"></span>
+        <span class="logo-particle lp1" aria-hidden="true"></span>
+        <span class="logo-particle lp2" aria-hidden="true"></span>
+        <span class="logo-particle lp3" aria-hidden="true"></span>
+        <span class="logo-particle lp4" aria-hidden="true"></span>
+        <span class="logo-particle lp5" aria-hidden="true"></span>
+        <span class="logo-particle lp6" aria-hidden="true"></span>
       </div>
       <!-- Contenedor reservado desde el HTML inicial para evitar CLS al cargar admin.js -->
       <div id="mv-header-btn-area" class="mv-header-auth"></div>
@@ -79,7 +79,7 @@
   <!-- ═══════════════════════════════════════════
        BARRA DE BÚSQUEDA Y FILTROS
   ═══════════════════════════════════════════ -->
-  <section class="controls">
+  <section class="controls" aria-label="Controles de búsqueda y filtrado">
     <div class="controls-inner">
 
       <!-- Búsqueda -->
@@ -89,17 +89,18 @@
           type="search"
           id="searchInput"
           placeholder="Buscar manga o manwha..."
+          aria-label="Buscar manga o manhwa por título"
           autocomplete="off"
         />
       </div>
 
       <!-- Filtros por tipo -->
-      <div class="filters" role="group" aria-label="Filtrar por tipo">
-        <button class="filter-btn active" data-filter="todos">Todos</button>
-        <button class="filter-btn" data-filter="manga">Manga</button>
-        <button class="filter-btn" data-filter="manwha">Manwha</button>
-        <button class="filter-btn" data-filter="manhwa">Manhwa</button>
-        <button class="filter-btn" data-filter="favoritos">Favoritos</button>
+      <div class="filters" role="group" aria-label="Filtrar catálogo por categoría">
+        <button type="button" class="filter-btn active" data-filter="todos" aria-label="Mostrar todos los títulos" aria-pressed="true">Todos</button>
+        <button type="button" class="filter-btn" data-filter="manga" aria-label="Filtrar solo Manga" aria-pressed="false">Manga</button>
+        <button type="button" class="filter-btn" data-filter="manwha" aria-label="Filtrar solo Manwha" aria-pressed="false">Manwha</button>
+        <button type="button" class="filter-btn" data-filter="manhwa" aria-label="Filtrar solo Manhwa" aria-pressed="false">Manhwa</button>
+        <button type="button" class="filter-btn" data-filter="favoritos" aria-label="Mostrar mis mangas favoritos" aria-pressed="false">Favoritos</button>
       </div>
 
     </div>
@@ -111,7 +112,7 @@
   ═══════════════════════════════════════════ -->
   <main>
     <div class="stats-bar">
-      <span id="contadorResultados">Cargando...</span>
+      <span id="contadorResultados" role="status" aria-live="polite">Cargando...</span>
     </div>
 
     <div class="manga-grid" id="mangaGrid">
@@ -125,10 +126,9 @@
     </filter>
   </svg>
 
-  <!-- Scripts: auth primero, luego manga, luego admin -->
   <!-- Pantalla de carga global -->
-  <div id="loading-overlay" class="loading-overlay hidden" role="status" aria-live="polite" aria-hidden="true" aria-label="Cargando">
-    <svg viewBox="0 0 240 240" height="240" width="240" class="pl">
+  <div id="loading-overlay" class="loading-overlay hidden" role="status" aria-live="polite" aria-hidden="true" aria-label="Cargando contenido">
+    <svg viewBox="0 0 240 240" height="240" width="240" class="pl" aria-hidden="true">
       <circle stroke-linecap="round" stroke-dashoffset="-330" stroke-dasharray="0 660" stroke-width="20" stroke="#816ed8" fill="none" r="105" cy="120" cx="120" class="pl__ring pl__ring--a"></circle>
       <circle stroke-linecap="round" stroke-dashoffset="-110" stroke-dasharray="0 220" stroke-width="20" stroke="#000" fill="none" r="35" cy="120" cx="120" class="pl__ring pl__ring--b"></circle>
       <circle stroke-linecap="round" stroke-dasharray="0 440" stroke-width="20" stroke="#000" fill="none" r="70" cy="120" cx="85" class="pl__ring pl__ring--c"></circle>
@@ -136,16 +136,98 @@
     </svg>
   </div>
 
-  <script src="intro.js?v=38b683a0" defer></script>
-  <script src="auth.js?v=bd8622b1" defer></script>
-  <script src="manga.js?v=6cf82ef8" defer></script>
-  <script src="admin.js?v=48d7e29c" defer></script>
+  <!-- ═══════════════════════════════════════════
+       MODAL LEGAL (Privacidad, Términos/DMCA y Cookies)
+  ═══════════════════════════════════════════ -->
+  <div id="mv-legal-overlay" class="mv-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="mv-legal-title">
+    <div class="mv-nadd-modal mv-legal-modal">
+      <button type="button" class="mv-modal-close" id="mv-legal-close" title="Cerrar" aria-label="Cerrar ventana de información legal">
+        <i class="fi fi-rr-cross-small" aria-hidden="true"></i>
+      </button>
+      <h2 class="mv-nadd-title" id="mv-legal-title">Información Legal</h2>
+      <div id="mv-legal-body" class="mv-legal-body" tabindex="0"></div>
+      <div class="mv-form-actions" style="margin-top: 1.2rem;">
+        <button type="button" class="mv-btn mv-btn-primary" id="mv-legal-ok" aria-label="Entendido y cerrar ventana legal">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       BANNER DE CONSENTIMIENTO DE COOKIES (RGPD / LOPD)
+  ═══════════════════════════════════════════ -->
+  <aside id="cookie-banner" class="cookie-banner" role="region" aria-label="Aviso de privacidad y consentimiento de cookies">
+    <div class="cookie-banner-inner">
+      <div class="cookie-banner-text">
+        <p class="cookie-banner-title"><i class="fi fi-rr-shield-check" aria-hidden="true"></i> Tu privacidad en Vault</p>
+        <p class="cookie-banner-desc">
+          Utilizamos almacenamiento local estrictamente necesario para guardar tus favoritos, apuntes de lectura y sesión.
+          Solo activamos analíticas con IP anonimizada (<code>anonymize_ip</code>) si nos das tu consentimiento explícito.
+          Consulta nuestra <button type="button" class="mv-inline-legal-btn" data-legal="privacy" aria-label="Leer Política de Privacidad">Política de Privacidad</button>,
+          <button type="button" class="mv-inline-legal-btn" data-legal="terms" aria-label="Leer Términos y Condiciones y Aviso DMCA">Términos / DMCA</button> y
+          <button type="button" class="mv-inline-legal-btn" data-legal="cookies" aria-label="Leer Política de Cookies">Política de Cookies</button>.
+        </p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button type="button" id="btn-config-cookies" class="mv-btn mv-btn-secondary" aria-label="Configurar preferencias de cookies">Configurar</button>
+        <button type="button" id="btn-necessary-cookies" class="mv-btn mv-btn-secondary" aria-label="Aceptar solo cookies estrictamente necesarias">Solo necesarias</button>
+        <button type="button" id="btn-accept-cookies" class="mv-btn mv-btn-primary" aria-label="Aceptar todas las cookies y cerrar aviso">Aceptar</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL DE CONFIGURACIÓN DE COOKIES (#cookie-config-modal)
+  ═══════════════════════════════════════════ -->
+  <div id="cookie-config-modal" class="mv-overlay cookie-config-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="cookie-config-title">
+    <div class="mv-nadd-modal cookie-modal-box">
+      <button type="button" class="mv-modal-close" id="btn-close-cookie-config" title="Cerrar" aria-label="Cerrar configuración de cookies">
+        <i class="fi fi-rr-cross-small" aria-hidden="true"></i>
+      </button>
+      <h2 class="mv-nadd-title" id="cookie-config-title"><i class="fi fi-rr-settings-sliders" aria-hidden="true"></i> Configurar Cookies</h2>
+      <p class="cookie-modal-subtitle">Personaliza tus preferencias de privacidad en <strong>Vault</strong>.</p>
+
+      <div class="cookie-modal-options">
+        <!-- a) Almacenamiento Necesario: Siempre activo -->
+        <div class="cookie-modal-row">
+          <div class="cookie-modal-info">
+            <span class="cookie-modal-label-title">Almacenamiento Necesario (Favoritos, Sesión)</span>
+            <span class="cookie-modal-label-desc">Siempre activo. Indispensable para guardar tus mangas favoritos, notas de lectura y sesión local.</span>
+          </div>
+          <label class="cookie-switch" aria-label="Almacenamiento Necesario (Siempre activo)">
+            <input type="checkbox" checked disabled />
+            <span class="cookie-slider disabled-slider"></span>
+          </label>
+        </div>
+
+        <!-- b) Analíticas Anónimas: Interruptor activable/desactivable -->
+        <div class="cookie-modal-row">
+          <div class="cookie-modal-info">
+            <span class="cookie-modal-label-title">Analíticas Anónimas (Google Analytics)</span>
+            <span class="cookie-modal-label-desc">Nos ayuda a mejorar el rendimiento del sitio con IP anonimizada (<code>anonymize_ip</code>), sin rastreo personal.</span>
+          </div>
+          <label class="cookie-switch" for="analytics-toggle" aria-label="Activar o desactivar Analíticas Anónimas (Google Analytics)">
+            <input type="checkbox" id="analytics-toggle" />
+            <span class="cookie-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="mv-form-actions" style="margin-top: 1.25rem;">
+        <button type="button" id="btn-save-cookie-config" class="mv-btn mv-btn-primary" style="width: 100%; justify-content: center;" aria-label="Guardar preferencias de cookies">
+          <i class="fi fi-rr-disk" aria-hidden="true"></i> Guardar preferencias
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="intro.js?v=2.0" defer></script>
+  <script src="auth.js?v=2.0" defer></script>
+  <script src="manga.js?v=2.0" defer></script>
+  <script src="admin.js?v=2.0" defer></script>
   <script>
-    // Iniciar el panel de admin (barra de sesión, botón de ajustes, modales) cuando todo cargó.
-    // Los scripts con defer aún NO existen mientras corre este script inline, por eso se llama
-    // dentro de una función (se evalúa en DOMContentLoaded, ya con admin.js disponible).
     document.addEventListener('DOMContentLoaded', function () { initAdminPanel(); });
   </script>
+
   <!-- ═══════════════════════════════════════════
        PIE DE PÁGINA (al final del contenido, sin position:fixed)
   ═══════════════════════════════════════════ -->
@@ -155,7 +237,7 @@
 
       <div class="button-container">
         <!-- Botón GitHub -->
-        <a href="https://github.com/Enzo0706-Curso" target="_blank" rel="noopener noreferrer" class="brutalist-button github" aria-label="Mi perfil de GitHub">
+        <a href="https://github.com/Enzo0706-Curso" target="_blank" rel="noopener noreferrer" class="brutalist-button github" aria-label="Visitar mi perfil de GitHub (se abre en una pestaña nueva)">
           <div class="openai-logo github-logo">
             <svg class="openai-icon" viewBox="0 0 24 24" role="img" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           </div>
@@ -166,7 +248,7 @@
         </a>
 
         <!-- Botón LinkedIn -->
-        <a href="https://www.linkedin.com/in/yeison-martinez-vargas-082841261" target="_blank" rel="noopener noreferrer" class="brutalist-button linkedin" aria-label="Conectar en LinkedIn">
+        <a href="https://www.linkedin.com/in/yeison-martinez-vargas-082841261" target="_blank" rel="noopener noreferrer" class="brutalist-button linkedin" aria-label="Conectar conmigo en LinkedIn (se abre en una pestaña nueva)">
           <div class="openai-logo linkedin-logo">
             <svg class="openai-icon" viewBox="0 0 24 24" role="img" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           </div>
@@ -176,6 +258,15 @@
           </div>
         </a>
       </div>
+
+      <!-- Enlaces Legales, DMCA y Privacidad -->
+      <nav class="footer-legal-nav" aria-label="Enlaces legales, DMCA y privacidad">
+        <button type="button" class="footer-legal-link" data-legal="privacy" aria-label="Abrir Política de Privacidad">Política de Privacidad</button>
+        <span class="footer-sep" aria-hidden="true">•</span>
+        <button type="button" class="footer-legal-link" data-legal="terms" aria-label="Abrir Términos y Condiciones y Aviso DMCA">Términos y Condiciones / DMCA</button>
+        <span class="footer-sep" aria-hidden="true">•</span>
+        <button type="button" class="footer-legal-link" data-legal="cookies" aria-label="Abrir Política y Configuración de Cookies">Política de Cookies</button>
+      </nav>
 
       <p class="footer-copy">© 2026 enzo_wukong Mangas - Todos los derechos reservados</p>
     </div>
