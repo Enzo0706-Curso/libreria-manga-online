@@ -2749,25 +2749,19 @@ i.fi { display: inline-block; min-width: 1em; }
 }
 
 /* Optimización del texto con recorte de paneles (PC y Móvil)
-   Se aplica también a .vault-title .letter porque en Chrome/Edge cuando un hijo
-   tiene display:inline-block + transform, necesita su propio background-clip:text */
+   Usa el sprite local comprimido vault-panels.webp (ahorra >350 KiB de imágenes externas sin comprimir) */
 .marvel-text,
 .vault-title .letter {
   color: transparent;
-  background-image: 
-    url('https://i.pinimg.com/originals/e4/7a/0b/e47a0b8cb6ebeb9902e661f3a7478361.jpg'),
-    url('https://th.bing.com/th/id/R.7fc04b0677e46b6b2e04ab05d1b6b7af?rik=Pys3xGCYjuivow&pid=ImgRaw&r=0'),
-    url('https://tse2.mm.bing.net/th/id/OIP.ME5L_q4-y42pRVgzhI7FewHaLz?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'),
-    url('https://tse2.mm.bing.net/th/id/OIP.PKQ9e9wG5X7yqBs3DnpHBwHaLH?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');
-
-  background-size: 50% auto !important;
+  background-image: url('vault-panels.webp');
+  background-size: auto 100% !important;
   background-repeat: repeat-x !important;
   background-position: 0% 50%;
 
-  /* Nitidez y rendimiento de renderizado */
+  /* Nitidez y aceleración por hardware (GPU) */
   image-rendering: -webkit-optimize-contrast;
   will-change: transform;
-  transform: translateZ(0); /* Aceleración 3D en GPU */
+  transform: translateZ(0);
   
   -webkit-background-clip: text;
   background-clip: text;
@@ -2791,7 +2785,7 @@ i.fi { display: inline-block; min-width: 1em; }
 /* Optimización de cada letra individual */
 .vault-title .letter {
   display: inline-block;
-  background-size: 220% auto !important;
+  background-size: auto 100% !important;
   will-change: transform, opacity;
   transform: translateZ(0);
   opacity: 0; /* Anime.js anima cada letra de 0 a 1 */
@@ -2823,7 +2817,7 @@ i.fi { display: inline-block; min-width: 1em; }
   .vault-title .letter {
     /* Reducir drásticamente el peso del filtro drop-shadow en teléfonos */
     filter: drop-shadow(0 0 12px rgba(255, 75, 110, 0.5)) !important;
-    background-size: 80% auto !important; /* Menos repeticiones de textura en RAM móvil */
+    background-size: auto 100% !important;
     animation: marvelRoll 10s linear infinite !important;
   }
   .sub-brand {
@@ -2866,13 +2860,19 @@ main {
   min-height: 44px;
 }
 
-/* 2. OPTIMIZAR EL LCP Y REDUCIR TAMAÑO VISUAL DEL LOGOTIPO EN MÓVILES */
+/* 2. OPTIMIZAR EL LCP Y DIMENSIONES DEL LOGOTIPO (89x126 en móvil) */
+.logo-img {
+  width: 113px;
+  height: 160px;
+  aspect-ratio: 89 / 126;
+}
+
 @media (max-width: 768px) {
   .logo-img {
-    height: 72px !important;
-    max-height: 72px !important;
-    width: auto !important;
-    aspect-ratio: 723 / 1024;
+    width: 89px !important;
+    height: 126px !important;
+    max-height: 126px !important;
+    aspect-ratio: 89 / 126;
   }
 }
 
@@ -2920,4 +2920,5 @@ main {
 .stats-bar {
   color: #a1a1aa !important;
 }
+
 

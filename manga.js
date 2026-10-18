@@ -479,12 +479,9 @@ function renderizarGrid() {
   } else {
     mangasFiltrados.forEach((manga, i) => {
       const card = crearTicket(manga);
-      if (i < 4) {
+      if (i < 2) {
         const img = card.querySelector('.t-cover');
-        if (img) {
-          img.loading = 'eager';
-          if (i === 0) img.setAttribute('fetchpriority', 'high');
-        }
+        if (img) img.loading = 'eager';
       }
       fragmento.appendChild(card);
     });
