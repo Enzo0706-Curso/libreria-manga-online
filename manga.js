@@ -255,23 +255,103 @@ function obtenerMangasFiltrados() {
 
 /**
  * Genera los botones de links para el stub del ticket.
+ * - Si hay 1 solo enlace: renderiza el botón directo con UIcons.
+ * - Si hay 2 o más enlaces: renderiza un único botón .btn-open-servers con contador.
  * @param {Array} links — Array de links del manga
+ * @param {string|number} mangaId — ID del manga
  * @returns {string} — HTML de los links
  */
-function generarLinks(links) {
-  return links.map(link => `
-    <a
-      class="t-link-btn"
-      href="${link.url}"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <span class="t-link-icon" aria-hidden="true"><i class="fi fi-rr-book-alt"></i></span>
-      <span class="t-link-name">${link.nombre}</span>
-      <span class="t-link-arrow" aria-hidden="true"><i class="fi fi-rr-arrow-right"></i></span>
-    </a>
-  `).join("");
+function generarLinks(links, mangaId = "") {
+  if (!Array.isArray(links) || links.length === 0) return "";
+
+  if (links.length === 1) {
+    const link = links[0];
+    return `
+      <a
+        class="t-link-btn"
+        href="${link.url}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="t-link-icon" aria-hidden="true"><i class="fi fi-rr-book-alt"></i></span>
+        <span class="t-link-name">${link.nombre}</span>
+        <span class="t-link-arrow" aria-hidden="true"><i class="fi fi-rr-angle-small-right"></i></span>
+      </a>
+    `;
+  }
+
+  return `
+    <button type="button" class="btn-open-servers" data-manga-id="${mangaId}" aria-haspopup="dialog">
+      <i class="fi fi-rr-apps" aria-hidden="true"></i>
+      <span>Opciones de lectura</span>
+      <span class="servers-count">${links.length}</span>
+    </button>
+  `;
 }
+
+/**
+ * Inyecta los enlaces de lectura y muestra el modal reutilizable (#manga-links-modal).
+ * @param {string} titulo — Título del manga
+ * @param {Array} links — Lista de servidores [{ nombre, url }]
+ */
+function abrirModalOpciones(titulo, links) {
+  const modal = document.getElementById('manga-links-modal');
+  const modalTitle = document.getElementById('modal-manga-title');
+  const linksContainer = document.getElementById('modal-links-container');
+
+  if (!modal || !linksContainer) return;
+
+  if (modalTitle) modalTitle.textContent = titulo;
+  linksContainer.innerHTML = '';
+
+  // Genera un botón por cada servidor de lectura
+  links.forEach(link => {
+    const a = document.createElement('a');
+    a.href = link.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.className = 'modal-link-btn';
+    a.innerHTML = `<i class="fi fi-rr-book-alt" aria-hidden="true"></i> <span>${link.nombre || 'Leer manga'}</span> <i class="fi fi-rr-angle-small-right" aria-hidden="true"></i>`;
+    linksContainer.appendChild(a);
+  });
+
+  modal.style.display = 'flex';
+}
+
+// Delegación global de eventos para abrir y cerrar el modal de opciones de lectura
+document.addEventListener('click', (e) => {
+  // Si hace clic en el botón de opciones de lectura (o cualquiera de sus elementos hijos)
+  const btn = e.target.closest('.btn-open-servers');
+  if (btn) {
+    const mangaId = btn.getAttribute('data-manga-id');
+    const listaMangas = (typeof getMangasCombinados === 'function')
+      ? getMangasCombinados()
+      : BD_MANGAS;
+    const mangaData = listaMangas.find(
+      m => m.id == mangaId || m.nombre == mangaId || m.titulo == mangaId
+    );
+
+    if (mangaData && mangaData.links) {
+      abrirModalOpciones(mangaData.nombre || mangaData.titulo, mangaData.links);
+    }
+    return;
+  }
+
+  // Cerrar modal al hacer clic en el botón X o fuera del contenido (.modal-overlay)
+  if (e.target.closest('#close-links-modal') || e.target.classList.contains('modal-overlay')) {
+    const modal = document.getElementById('manga-links-modal');
+    if (modal) modal.style.display = 'none';
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('manga-links-modal');
+    if (modal && modal.style.display !== 'none') {
+      modal.style.display = 'none';
+    }
+  }
+});
 
 /**
  * Crea una tarjeta tipo TICKET para un manga.
@@ -280,7 +360,7 @@ function generarLinks(links) {
  */
 function crearTicket(manga, index = 99) {
   const wrapper = document.createElement("div");
-  wrapper.className = "ticket-wrapper";
+  wrapper.className = "ticket-wrapper manga-card";
   wrapper.dataset.id = manga.id;
 
   const imgSrc = manga.imagen ||
@@ -344,7 +424,7 @@ function crearTicket(manga, index = 99) {
           <div class="t-stub">
             <p class="t-stub-title"><i class="fi fi-rr-books" aria-hidden="true"></i> Elige dónde leer</p>
             <div class="t-links">
-              ${generarLinks(manga.links)}
+              ${generarLinks(manga.links, manga.id)}
             </div>
 
             <!-- Botón neon para girar al reverso -->
