@@ -2769,10 +2769,10 @@ i.fi { display: inline-block; min-width: 1em; }
   background: rgba(18, 18, 24, 0.88);
   border: 1px solid rgba(255, 75, 110, 0.4);
   border-radius: 16px;
-  padding: 30px 45px;
+  padding: 35px 50px;
   backdrop-filter: blur(12px);
   box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255, 75, 110, 0.2);
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -2849,21 +2849,6 @@ i.fi { display: inline-block; min-width: 1em; }
 .vault-title .letter:nth-child(3) { animation-delay: -7.2s !important; }
 .vault-title .letter:nth-child(4) { animation-delay: -10.8s !important; }
 .vault-title .letter:nth-child(5) { animation-delay: -14.4s !important; }
-
-.vault-subtitle,
-.sub-brand {
-  position: relative;
-  color: cyan !important; /* Color cian */
-  font-size: 0.9rem !important; /* Tamaño pequeño */
-  margin-top: -10px !important; /* Ajuste de espaciado */
-  letter-spacing: 2px !important;
-  text-align: center;
-  z-index: 2;
-  font-weight: 800;
-  opacity: 0;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
 
 /* MODO RENDIMIENTO EXTREMO PARA MÓVILES */
 @media (max-width: 768px) {

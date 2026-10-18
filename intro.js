@@ -65,13 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: stagger(isMobile ? 90 : 130),
         ease: 'outElastic(1, .6)'
       })
-      // Aparición de la submarca inferior
-      .add('.sub-brand', {
-        opacity: [0, 1],
-        translateY: [10, 0],
-        duration: 500,
-        ease: 'outQuad'
-      }, '-=300')
       // Pausa apreciando los paneles de manga
       .add('.vault-title', {
         scale: [1, 1.04],
