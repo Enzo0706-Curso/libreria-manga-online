@@ -29,15 +29,14 @@
         ]
       },
       {
-        "source": "**/*.@(js|css)",
+        "source": "**/*.@(jpg|jpeg|png|webp|gif|svg|css|js)",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "max-age=0, must-revalidate"
+            "value": "max-age=31536000, immutable"
           }
         ]
       }
     ]
   }
 }
-

@@ -278,13 +278,17 @@ function generarLinks(links) {
  * @param {Object} manga — Objeto de la BD
  * @returns {HTMLElement} — Elemento listo para insertar
  */
-function crearTicket(manga) {
+function crearTicket(manga, index = 99) {
   const wrapper = document.createElement("div");
   wrapper.className = "ticket-wrapper";
   wrapper.dataset.id = manga.id;
 
   const imgSrc = manga.imagen ||
     "https://placehold.co/300x400/1a1a28/888?text=Sin+Imagen";
+
+  const isViewportInitial = index < 2;
+  const loadingAttr = isViewportInitial ? 'eager' : 'lazy';
+  const priorityAttr = isViewportInitial ? 'high' : 'low';
 
   wrapper.innerHTML = `
     <!-- INNER: este div es el que rota al recibir .is-flipped -->
@@ -301,7 +305,8 @@ function crearTicket(manga) {
                 class="t-cover"
                 src="${imgSrc}"
                 alt="Portada de ${manga.nombre}"
-                loading="lazy"
+                loading="${loadingAttr}"
+                fetchpriority="${priorityAttr}"
                 decoding="async"
                 referrerpolicy="no-referrer"
                 width="300"
@@ -480,11 +485,7 @@ function renderizarGrid() {
     fragmento.appendChild(emptyWrapper);
   } else {
     mangasFiltrados.forEach((manga, i) => {
-      const card = crearTicket(manga);
-      if (i < 2) {
-        const img = card.querySelector('.t-cover');
-        if (img) img.loading = 'eager';
-      }
+      const card = crearTicket(manga, i);
       fragmento.appendChild(card);
     });
   }

@@ -2748,28 +2748,83 @@ i.fi { display: inline-block; min-width: 1em; }
   max-width: 95vw;
 }
 
-/* Optimización del texto con recorte de paneles (PC y Móvil)
-   100% acelerado por GPU (will-change: transform + translateZ(0)),
-   sin animar background-position-x para eliminar renders no compuestos en PageSpeed */
+/* 1. TIRA ANIMADA CON FLEXBOX EN .vault-hero-card Y TEXTO "VAULT" RECORTADO */
+@keyframes trackSlide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Desplaza la mitad exacta de la tira duplicada */
+  }
+}
+
+@keyframes marvelRollGPU {
+  0% { background-position: 0px center; }
+  100% { background-position: -800px center; }
+}
+
+.vault-hero-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(18, 18, 24, 0.88);
+  border: 1px solid rgba(255, 75, 110, 0.4);
+  border-radius: 16px;
+  padding: 30px 45px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255, 75, 110, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Tira de fondo dentro de la caja */
+.manga-track-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  width: max-content;
+  will-change: transform;
+  animation: trackSlide 25s linear infinite;
+  z-index: 1;
+}
+
+.manga-track-bg img {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+
+/* Efecto recortado en el texto usando la tira horizontal combinada de los 4 paneles */
 .marvel-text,
 .vault-title .letter {
-  color: transparent;
+  position: relative;
+  z-index: 2;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
   background-image: url('vault-panels.webp');
-  background-size: 400% 100% !important;
+  background-size: 800px auto !important;
   background-repeat: repeat-x !important;
-  background-position: 0% 50%;
-
-  /* Nitidez y aceleración exclusiva por hardware (GPU) */
-  image-rendering: -webkit-optimize-contrast;
-  will-change: transform;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  will-change: background-position;
   transform: translateZ(0);
   backface-visibility: hidden;
-  
-  -webkit-background-clip: text;
-  background-clip: text;
+  animation: marvelRollGPU 18s linear infinite !important;
+  filter: drop-shadow(0 0 15px rgba(255, 75, 110, 0.8));
 }
 
 .vault-title {
+  position: relative;
+  z-index: 2;
   font-size: 7.5rem !important;
   font-weight: 900;
   letter-spacing: 12px;
@@ -2779,52 +2834,52 @@ i.fi { display: inline-block; min-width: 1em; }
   justify-content: center;
   transform: translateZ(0);
   will-change: transform;
-  filter: drop-shadow(0 0 25px rgba(255, 75, 110, 0.7));
-  animation: marvelRoll 6s ease-in-out infinite !important;
 }
 
-/* Optimización de cada letra individual con desplazamiento de viñeta fijo por letra (0 repintados CPU) */
 .vault-title .letter {
   display: inline-block;
-  will-change: transform, opacity;
+  will-change: transform, opacity, background-position;
   transform: translateZ(0);
   opacity: 0; /* Anime.js anima cada letra de 0 a 1 */
 }
-.vault-title .letter:nth-child(1) { background-position: 5% 50%; }
-.vault-title .letter:nth-child(2) { background-position: 30% 50%; }
-.vault-title .letter:nth-child(3) { background-position: 55% 50%; }
-.vault-title .letter:nth-child(4) { background-position: 80% 50%; }
-.vault-title .letter:nth-child(5) { background-position: 98% 50%; }
 
+/* Desfase de fase por letra para que se aprecien los 4 paneles simultáneamente a lo largo de "VAULT" */
+.vault-title .letter:nth-child(1) { animation-delay: 0s !important; }
+.vault-title .letter:nth-child(2) { animation-delay: -3.6s !important; }
+.vault-title .letter:nth-child(3) { animation-delay: -7.2s !important; }
+.vault-title .letter:nth-child(4) { animation-delay: -10.8s !important; }
+.vault-title .letter:nth-child(5) { animation-delay: -14.4s !important; }
+
+.vault-subtitle,
 .sub-brand {
-  font-size: 1.4rem !important;
-  letter-spacing: 14px !important;
-  color: #a1a1aa;
+  position: relative;
+  color: cyan !important; /* Color cian */
+  font-size: 0.9rem !important; /* Tamaño pequeño */
+  margin-top: -10px !important; /* Ajuste de espaciado */
+  letter-spacing: 2px !important;
+  text-align: center;
+  z-index: 2;
   font-weight: 800;
-  margin-top: 40px !important;
   opacity: 0;
   transform: translateZ(0);
   will-change: transform, opacity;
 }
 
-/* Animación 100% compuesta en GPU (usa únicamente transform 3D, sin background-position-x) */
-@keyframes marvelRoll {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%      { transform: translate3d(0, -6px, 0) scale(1.03); }
-}
-
-/* MODO RENDIMIENTO EXTREMO PARA MÓVILES (Evita lag y caída de FPS) */
+/* MODO RENDIMIENTO EXTREMO PARA MÓVILES */
 @media (max-width: 768px) {
+  .vault-hero-card {
+    padding: 20px 25px;
+    width: 90%;
+  }
+  .marvel-text,
+  .vault-title .letter {
+    background-size: 600px auto !important;
+    animation: marvelRollGPU 18s linear infinite !important;
+    filter: drop-shadow(0 0 10px rgba(255, 75, 110, 0.5)) !important;
+  }
   .vault-title {
     font-size: 3.8rem !important;
     letter-spacing: 4px;
-    filter: drop-shadow(0 0 12px rgba(255, 75, 110, 0.5)) !important;
-    animation: marvelRoll 8s ease-in-out infinite !important;
-  }
-  .sub-brand {
-    font-size: 0.75rem !important;
-    letter-spacing: 5px !important;
-    margin-top: 20px !important;
   }
 }
 
@@ -2903,7 +2958,7 @@ main {
   to   { transform: perspective(500px) rotateX(20deg) scale(1.5) translate3d(0, 2em, 0); }
 }
 
-/* 5. ACCESIBILIDAD Y CONTRASTE DE COLORES (WCAG AA) */
+/* 5. ACCESIBILIDAD Y CONTRASTE DE COLORES (WCAG AA >= 4.5:1) */
 .filter-btn {
   color: #d4d4d8;
 }
@@ -2912,6 +2967,22 @@ main {
 .filter-btn:hover {
   background-color: #c81e3a !important;
   border-color: var(--color-accent) !important;
+  color: #ffffff !important;
+}
+
+#btn-accept-cookies,
+.mv-btn-primary {
+  background: #c81e45 !important;
+  background-color: #c81e45 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 1px solid #ff4b6e !important;
+}
+
+#btn-accept-cookies:hover,
+.mv-btn-primary:hover {
+  background: #a61738 !important;
+  background-color: #a61738 !important;
   color: #ffffff !important;
 }
 
