@@ -2749,27 +2749,26 @@ i.fi { display: inline-block; min-width: 1em; }
 }
 
 /* Optimización del texto con recorte de paneles (PC y Móvil)
-   Usa el sprite local comprimido vault-panels.webp (ahorra >350 KiB de imágenes externas sin comprimir) */
+   100% acelerado por GPU (will-change: transform + translateZ(0)),
+   sin animar background-position-x para eliminar renders no compuestos en PageSpeed */
 .marvel-text,
 .vault-title .letter {
   color: transparent;
   background-image: url('vault-panels.webp');
-  background-size: auto 100% !important;
+  background-size: 400% 100% !important;
   background-repeat: repeat-x !important;
   background-position: 0% 50%;
 
-  /* Nitidez y aceleración por hardware (GPU) */
+  /* Nitidez y aceleración exclusiva por hardware (GPU) */
   image-rendering: -webkit-optimize-contrast;
   will-change: transform;
   transform: translateZ(0);
+  backface-visibility: hidden;
   
   -webkit-background-clip: text;
   background-clip: text;
-  filter: drop-shadow(0 0 25px rgba(255, 75, 110, 0.7));
-  animation: marvelRoll 8s linear infinite !important;
 }
 
-/* TÍTULO VAULT GIGANTE */
 .vault-title {
   font-size: 7.5rem !important;
   font-weight: 900;
@@ -2780,16 +2779,22 @@ i.fi { display: inline-block; min-width: 1em; }
   justify-content: center;
   transform: translateZ(0);
   will-change: transform;
+  filter: drop-shadow(0 0 25px rgba(255, 75, 110, 0.7));
+  animation: marvelRoll 6s ease-in-out infinite !important;
 }
 
-/* Optimización de cada letra individual */
+/* Optimización de cada letra individual con desplazamiento de viñeta fijo por letra (0 repintados CPU) */
 .vault-title .letter {
   display: inline-block;
-  background-size: auto 100% !important;
   will-change: transform, opacity;
   transform: translateZ(0);
   opacity: 0; /* Anime.js anima cada letra de 0 a 1 */
 }
+.vault-title .letter:nth-child(1) { background-position: 5% 50%; }
+.vault-title .letter:nth-child(2) { background-position: 30% 50%; }
+.vault-title .letter:nth-child(3) { background-position: 55% 50%; }
+.vault-title .letter:nth-child(4) { background-position: 80% 50%; }
+.vault-title .letter:nth-child(5) { background-position: 98% 50%; }
 
 .sub-brand {
   font-size: 1.4rem !important;
@@ -2802,9 +2807,10 @@ i.fi { display: inline-block; min-width: 1em; }
   will-change: transform, opacity;
 }
 
+/* Animación 100% compuesta en GPU (usa únicamente transform 3D, sin background-position-x) */
 @keyframes marvelRoll {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(0, -6px, 0) scale(1.03); }
 }
 
 /* MODO RENDIMIENTO EXTREMO PARA MÓVILES (Evita lag y caída de FPS) */
@@ -2812,13 +2818,8 @@ i.fi { display: inline-block; min-width: 1em; }
   .vault-title {
     font-size: 3.8rem !important;
     letter-spacing: 4px;
-  }
-  .marvel-text,
-  .vault-title .letter {
-    /* Reducir drásticamente el peso del filtro drop-shadow en teléfonos */
     filter: drop-shadow(0 0 12px rgba(255, 75, 110, 0.5)) !important;
-    background-size: auto 100% !important;
-    animation: marvelRoll 10s linear infinite !important;
+    animation: marvelRoll 8s ease-in-out infinite !important;
   }
   .sub-brand {
     font-size: 0.75rem !important;
