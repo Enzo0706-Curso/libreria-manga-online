@@ -318,8 +318,15 @@ function abrirModalOpciones(titulo, links) {
   modal.style.display = 'flex';
 }
 
-// Delegación global de eventos para abrir y cerrar el modal de opciones de lectura
+// Delegación global de eventos para botones de la tarjeta y modal de opciones
 document.addEventListener('click', (e) => {
+  const bookmarkBtn = e.target.closest('.bookmark-btn, .fav-btn, .ui-bookmark');
+  if (bookmarkBtn) {
+    e.stopPropagation(); // Evita que el click active eventos generales de la tarjeta
+    // La lógica de guardado se ejecuta en el evento change del input .bookmark-checkbox dentro del label
+    return;
+  }
+
   // Si hace clic en el botón de opciones de lectura (o cualquiera de sus elementos hijos)
   const btn = e.target.closest('.btn-open-servers');
   if (btn) {
@@ -396,7 +403,7 @@ function crearTicket(manga, index = 99) {
             </div>
             <div class="t-img-overlay"></div>
             <!-- Marcador de favorito -->
-            <label class="ui-bookmark" data-manga-id="${manga.id}" title="Guardar en favoritos">
+            <label class="ui-bookmark bookmark-btn fav-btn" data-manga-id="${manga.id}" title="Guardar en favoritos">
               <input type="checkbox" class="bookmark-checkbox" aria-label="Guardar ${manga.nombre} en favoritos">
               <div class="bookmark" aria-hidden="true">
                 <svg viewBox="0 0 32 32" role="presentation">

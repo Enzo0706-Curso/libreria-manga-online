@@ -3577,3 +3577,21 @@ img.t-cover {
   }
 }
 
+.t-img-overlay {
+  pointer-events: none;
+}
+
+/* Ampliar área táctil (hit-box) del botón de favorito solo en móviles */
+@media (max-width: 768px) {
+  /* Selector del botón de favorito/bookmark en la tarjeta */
+  .manga-card .bookmark-btn, 
+  .manga-card .fav-btn,
+  .manga-card .ui-bookmark {
+    padding: 16px !important; /* Amplía drásticamente el área táctil */
+    font-size: 1.3rem !important;
+    --icon-size: 1.3rem !important;
+    z-index: 50 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+  }
+}
