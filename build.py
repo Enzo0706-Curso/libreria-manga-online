@@ -60,12 +60,12 @@ def main():
         print("%s: %d KB -> %s: %d KB" % (origen, len(original.encode("utf-8")) // 1024,
                                           destino, len(minificado.encode("utf-8")) // 1024))
 
-    VERSION = "2.0"
     html = leer("index.html")
     for nombre in ("estilo.min.css", "fondo.min.css", "intro.js", "auth.js", "manga.js", "admin.js"):
+        ver = hash_archivo(nombre)
         patron = r'((?:href|src)=")' + re.escape(nombre) + r'(?:\?v=[\w.\-]*)?(")'
-        html, n = re.subn(patron, r"\g<1>" + nombre + "?v=" + VERSION + r"\g<2>", html)
-        print("index.html: %s -> %d referencia(s) versionada(s) (?v=%s)" % (nombre, n, VERSION))
+        html, n = re.subn(patron, r"\g<1>" + nombre + "?v=" + ver + r"\g<2>", html)
+        print("index.html: %s -> %d referencia(s) versionada(s) (?v=%s)" % (nombre, n, ver))
     escribir("index.html", html)
     print("Listo. Ahora puedes ejecutar: firebase deploy --only hosting:enzowukong-mangas")
 

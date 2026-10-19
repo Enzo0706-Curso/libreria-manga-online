@@ -3758,6 +3758,23 @@ img.t-cover {
   border-radius: 99em;
 }
 
+.t-warp-media {
+  width: 100%;
+  height: 150px;
+  border-radius: 0.65em;
+  overflow: hidden;
+  margin-bottom: 0.65em;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
+}
+
+.t-warp-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .warp-overlay .t-title {
   font-size: 1.5em;
   font-weight: 900;

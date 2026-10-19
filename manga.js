@@ -385,18 +385,26 @@ document.addEventListener('click', (e) => {
     const warpTypeEl = document.getElementById('warp-manga-type');
     const warpCoverWrap = document.getElementById('warp-cover-wrap');
     const warpCoverImg = document.getElementById('warp-manga-cover');
+    const warpMediaBox = document.getElementById('warp-media-box');
+    const warpThumbImg = document.getElementById('warp-manga-thumb');
 
     if (warpTitleEl) warpTitleEl.textContent = mangaTitle;
     if (warpServerEl) warpServerEl.textContent = `Conectando a: ${serverName}`;
     if (warpTypeEl) warpTypeEl.textContent = mangaType;
-    if (warpCoverWrap && warpCoverImg) {
-      if (mangaCover) {
+    if (mangaCover) {
+      if (warpCoverWrap && warpCoverImg) {
         warpCoverImg.src = mangaCover;
         warpCoverImg.alt = `Portada de ${mangaTitle}`;
         warpCoverWrap.style.display = 'block';
-      } else {
-        warpCoverWrap.style.display = 'none';
       }
+      if (warpMediaBox && warpThumbImg) {
+        warpThumbImg.src = mangaCover;
+        warpThumbImg.alt = `Portada de ${mangaTitle}`;
+        warpMediaBox.style.display = 'block';
+      }
+    } else {
+      if (warpCoverWrap) warpCoverWrap.style.display = 'none';
+      if (warpMediaBox) warpMediaBox.style.display = 'none';
     }
 
     const overlay = document.getElementById('warp-transition-overlay');
@@ -405,32 +413,42 @@ document.addEventListener('click', (e) => {
       return;
     }
 
-    // Puente de compatibilidad para anime.timeline en Anime.js v4 (createTimeline)
-    if (typeof anime.timeline !== 'function' && typeof anime.createTimeline === 'function') {
-      anime.timeline = (opts = {}) => {
-        const v4Tl = anime.createTimeline({ onComplete: opts.complete });
-        const mapEase = (easing) => {
-          if (!easing) return 'outQuad';
-          return easing.replace(/^easeInOut/, 'inOut').replace(/^easeOut/, 'out').replace(/^easeIn/, 'in');
-        };
-        const api = {
-          add(params, offset) {
-            const { targets, easing, ...rest } = params;
-            const scopedTargets = (typeof targets === 'string' && overlay.querySelector(targets))
-              ? overlay.querySelectorAll(targets)
-              : targets;
-            v4Tl.add(scopedTargets, { ...rest, ease: mapEase(easing) }, offset);
-            return api;
-          }
-        };
-        return api;
-      };
-    }
+    const linksModal = document.getElementById('manga-links-modal');
+    if (linksModal) linksModal.style.display = 'none';
 
     overlay.style.display = 'flex';
 
+    // Función compatible con Anime.js v3 (anime.timeline) y Anime.js v4 (anime.createTimeline)
+    const crearTimelineWarp = (opts = {}) => {
+      if (typeof anime.timeline === 'function') {
+        return anime.timeline(opts);
+      }
+      const v4Tl = anime.createTimeline({ onComplete: opts.complete });
+      const mapEase = (easing) => {
+        if (!easing) return 'outQuad';
+        return easing.replace(/^easeInOut/, 'inOut').replace(/^easeOut/, 'out').replace(/^easeIn/, 'in');
+      };
+      const mapOffset = (offset) => {
+        if (typeof offset === 'string' && /^[+-]=/.test(offset)) {
+          return '<' + offset;
+        }
+        return offset;
+      };
+      const api = {
+        add(params, offset) {
+          const { targets, easing, ...rest } = params;
+          const scopedTargets = (typeof targets === 'string' && overlay.querySelector(targets))
+            ? overlay.querySelectorAll(targets)
+            : targets;
+          v4Tl.add(scopedTargets, { ...rest, ease: mapEase(easing) }, mapOffset(offset));
+          return api;
+        }
+      };
+      return api;
+    };
+
     // Animación con Anime.js inspirada en Honkai Star Rail Warp
-    const tl = anime.timeline({
+    const tl = crearTimelineWarp({
       complete: () => {
         overlay.style.display = 'none';
         const opened = window.open(targetUrl, '_blank');

@@ -13,10 +13,10 @@
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" /></noscript>
   <!-- CSS crítico (minificado). Se deja bloqueante a propósito: evita el "flash" sin estilos -->
-  <link rel="stylesheet" href="estilo.min.css?v=2.0" />
+  <link rel="stylesheet" href="estilo.min.css?v=752b75ce" />
   <!-- Fondo estrellado: decorativo, carga sin bloquear -->
-  <link rel="stylesheet" href="fondo.min.css?v=2.0" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="fondo.min.css?v=2.0" /></noscript>
+  <link rel="stylesheet" href="fondo.min.css?v=a7bf1986" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="fondo.min.css?v=a7bf1986" /></noscript>
   <!-- Intro: si ya se vio en esta sesión, ocultarla desde el primer pintado (sin parpadeo) -->
   <script>try{if(sessionStorage.getItem("mv_intro_marvel_v7")==="1")document.documentElement.classList.add("no-intro")}catch(e){}</script>
   <noscript><style>.intro-loader{display:none!important}</style></noscript>
@@ -236,10 +236,10 @@
     </div>
   </div>
 
-  <script src="intro.js?v=2.0" defer></script>
-  <script src="auth.js?v=2.0" defer></script>
-  <script src="manga.js?v=2.0" defer></script>
-  <script src="admin.js?v=2.0" defer></script>
+  <script src="intro.js?v=f5d2f847" defer></script>
+  <script src="auth.js?v=bd8622b1" defer></script>
+  <script src="manga.js?v=339daa8b" defer></script>
+  <script src="admin.js?v=7b956d6c" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () { initAdminPanel(); });
   </script>
@@ -306,6 +306,9 @@
                 <div class="t-type" id="warp-manga-type">MANGA PASS</div>
               </div>
               <!-- Contenedor para imagen y título dinámico -->
+              <div class="t-warp-media" id="warp-media-box" style="display:none;">
+                <img id="warp-manga-thumb" class="t-warp-thumb" src="" alt="" />
+              </div>
               <div class="t-title" id="warp-manga-title" style="font-size: 1.5em; margin-bottom: 0.5em;">Título</div>
               <div class="t-subtitle" id="warp-server-name">Servidor</div>
               <div class="t-details">
