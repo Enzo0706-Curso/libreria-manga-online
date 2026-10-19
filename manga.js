@@ -268,7 +268,7 @@ function generarLinks(links, mangaId = "") {
     const link = links[0];
     return `
       <a
-        class="t-link-btn"
+        class="t-link-btn btn-direct-read"
         href="${link.url}"
         target="_blank"
         rel="noopener noreferrer"
@@ -293,14 +293,16 @@ function generarLinks(links, mangaId = "") {
  * Inyecta los enlaces de lectura y muestra el modal reutilizable (#manga-links-modal).
  * @param {string} titulo — Título del manga
  * @param {Array} links — Lista de servidores [{ nombre, url }]
+ * @param {Object} [mangaData] — Datos completos del manga (portada, tipo)
  */
-function abrirModalOpciones(titulo, links) {
+function abrirModalOpciones(titulo, links, mangaData = null) {
   const modal = document.getElementById('manga-links-modal');
   const modalTitle = document.getElementById('modal-manga-title');
   const linksContainer = document.getElementById('modal-links-container');
 
   if (!modal || !linksContainer) return;
 
+  window._currentWarpManga = mangaData || { nombre: titulo };
   if (modalTitle) modalTitle.textContent = titulo;
   linksContainer.innerHTML = '';
 
@@ -318,7 +320,7 @@ function abrirModalOpciones(titulo, links) {
   modal.style.display = 'flex';
 }
 
-// Delegación global de eventos para botones de la tarjeta y modal de opciones
+// Delegación global de eventos para botones de la tarjeta, modal de opciones y transición Warp
 document.addEventListener('click', (e) => {
   const bookmarkBtn = e.target.closest('.bookmark-btn, .fav-btn, .ui-bookmark');
   if (bookmarkBtn) {
@@ -339,7 +341,7 @@ document.addEventListener('click', (e) => {
     );
 
     if (mangaData && mangaData.links) {
-      abrirModalOpciones(mangaData.nombre || mangaData.titulo, mangaData.links);
+      abrirModalOpciones(mangaData.nombre || mangaData.titulo, mangaData.links, mangaData);
     }
     return;
   }
@@ -348,6 +350,109 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('#close-links-modal') || e.target.classList.contains('modal-overlay')) {
     const modal = document.getElementById('manga-links-modal');
     if (modal) modal.style.display = 'none';
+    return;
+  }
+
+  // Interceptar el clic en cualquier botón o enlace de lectura e invocar Anime.js (VAULT WARP)
+  const link = e.target.closest('a[target="_blank"], .modal-link-btn, .btn-direct-read');
+  if (link && link.href && !link.href.includes('#')) {
+    e.preventDefault();
+    const targetUrl = link.href;
+
+    // Intentar extraer datos de la tarjeta o del modal de servidores activo
+    const card = link.closest('.manga-card');
+    const modalTitleEl = document.getElementById('modal-manga-title');
+    const cardTitleEl = card ? card.querySelector('.t-title, h3, .manga-title, [class*="title"]') : null;
+    const mangaTitle = cardTitleEl
+      ? cardTitleEl.textContent.trim()
+      : (window._currentWarpManga?.nombre || modalTitleEl?.textContent?.trim() || "Manga Vault");
+
+    const serverName = link.textContent.trim() || "Servidor Online";
+
+    const cardTypeEl = card ? card.querySelector('.t-type-badge') : null;
+    const mangaType = cardTypeEl
+      ? cardTypeEl.textContent.trim()
+      : (window._currentWarpManga?.tipo || "MANGA PASS");
+
+    const cardCoverEl = card ? card.querySelector('img.t-cover') : null;
+    const mangaCover = cardCoverEl
+      ? cardCoverEl.src
+      : (window._currentWarpManga?.imagen || "");
+
+    // Actualizar textos e imagen en el tiquete Warp
+    const warpTitleEl = document.getElementById('warp-manga-title');
+    const warpServerEl = document.getElementById('warp-server-name');
+    const warpTypeEl = document.getElementById('warp-manga-type');
+    const warpCoverWrap = document.getElementById('warp-cover-wrap');
+    const warpCoverImg = document.getElementById('warp-manga-cover');
+
+    if (warpTitleEl) warpTitleEl.textContent = mangaTitle;
+    if (warpServerEl) warpServerEl.textContent = `Conectando a: ${serverName}`;
+    if (warpTypeEl) warpTypeEl.textContent = mangaType;
+    if (warpCoverWrap && warpCoverImg) {
+      if (mangaCover) {
+        warpCoverImg.src = mangaCover;
+        warpCoverImg.alt = `Portada de ${mangaTitle}`;
+        warpCoverWrap.style.display = 'block';
+      } else {
+        warpCoverWrap.style.display = 'none';
+      }
+    }
+
+    const overlay = document.getElementById('warp-transition-overlay');
+    if (!overlay || typeof anime === 'undefined') {
+      window.open(targetUrl, '_blank');
+      return;
+    }
+
+    // Puente de compatibilidad para anime.timeline en Anime.js v4 (createTimeline)
+    if (typeof anime.timeline !== 'function' && typeof anime.createTimeline === 'function') {
+      anime.timeline = (opts = {}) => {
+        const v4Tl = anime.createTimeline({ onComplete: opts.complete });
+        const mapEase = (easing) => {
+          if (!easing) return 'outQuad';
+          return easing.replace(/^easeInOut/, 'inOut').replace(/^easeOut/, 'out').replace(/^easeIn/, 'in');
+        };
+        const api = {
+          add(params, offset) {
+            const { targets, easing, ...rest } = params;
+            const scopedTargets = (typeof targets === 'string' && overlay.querySelector(targets))
+              ? overlay.querySelectorAll(targets)
+              : targets;
+            v4Tl.add(scopedTargets, { ...rest, ease: mapEase(easing) }, offset);
+            return api;
+          }
+        };
+        return api;
+      };
+    }
+
+    overlay.style.display = 'flex';
+
+    // Animación con Anime.js inspirada en Honkai Star Rail Warp
+    const tl = anime.timeline({
+      complete: () => {
+        overlay.style.display = 'none';
+        const opened = window.open(targetUrl, '_blank');
+        if (!opened) window.location.href = targetUrl;
+      }
+    });
+
+    tl.add({
+      targets: '.ticket',
+      scale: [0.2, 1.1, 1],
+      opacity: [0, 1, 1],
+      rotateX: ['45deg', '0deg'],
+      rotateY: ['-30deg', '0deg'],
+      duration: 1200,
+      easing: 'easeOutExpo'
+    })
+    .add({
+      targets: '.ticket-wrapper',
+      scale: [1, 1.05, 1],
+      duration: 600,
+      easing: 'easeInOutQuad'
+    }, '-=400');
   }
 });
 
